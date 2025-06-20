@@ -1,19 +1,46 @@
+// import React from 'react';
+// import { BrowserRouter, Routes, Route } from 'react-router-dom';
+// import Login from './views/Login';
+// import Users from './views/Users';
+// import Units from './views/Units';
+// import PrivateRoute from './components/PrivateRoute';
+
+// function App() {
+//   return (
+//     <BrowserRouter>
+//       <Routes>
+//         <Route path="/" element={<Login />} />
+//         <Route
+//           path="/dashboard"
+//           element={
+//             <PrivateRoute>
+//               {/* Componente protegido, por ejemplo, Users o un Dashboard */}
+//               <Users />
+//             </PrivateRoute>
+//           }
+//         />
+//         <Route path="/users" element={<Users />} />
+//         <Route path="/units" element={<Units />} />
+//       </Routes>
+//     </BrowserRouter>
+//   );
+// }
+
+// export default App;
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
-import BioSection from './components/BioSection';
-import RutasRectorado from './components/RutasRectorado';
-import RutasVicerrectorado from './components/RutasVicerrectorado';
+  import { BrowserRouter, Routes, Route } from 'react-router-dom';
+  import Login from './views/Login.jsx';
+  import Dashboard from './views/Dashboard.jsx';
 
-function App() {
-  return (
-    <div className="min-h-screen bg-white dark:bg-gray-300 text-gray-800 dark:text-cyan-900 flex items-center justify-center">
-      <Routes>
-        <Route path="/" element={<BioSection />} />
-        <Route path="/rutas-rectorado" element={<RutasRectorado />} />
-        <Route path="/rutas-vicerrectorado" element={<RutasVicerrectorado />} />
-      </Routes>
-    </div>
-  );
-}
+  function App() {
+    return (
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Routes>
+      </BrowserRouter>
+    );
+  }
 
-export default App;
+  export default App;
