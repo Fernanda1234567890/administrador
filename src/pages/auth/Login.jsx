@@ -35,7 +35,7 @@ const Login = () => {
     <div
       className="relative min-h-screen flex items-center justify-center"
       style={{
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/src/assets/1010.jpg')`,
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/src/assets/1010.jpg')`, // Usamos la ruta del primero (en public/)
         backgroundBlendMode: 'overlay',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
@@ -45,7 +45,7 @@ const Login = () => {
         <div className="flex justify-center mb-6">
           <div className="bg-white/20 p-4 rounded-full">
             <img
-              src="/src/assets/logo-uatf.png"
+              src="/logo-uatf.png" // Usamos la ruta del segundo (en public/)
               alt="User Image"
               className="w-18 h-15 object-cover rounded-full"
             />

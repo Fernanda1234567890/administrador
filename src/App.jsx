@@ -1,46 +1,30 @@
-// import React from 'react';
-// import { BrowserRouter, Routes, Route } from 'react-router-dom';
-// import Login from './views/Login';
-// import Users from './views/Users';
-// import Units from './views/Units';
-// import PrivateRoute from './components/PrivateRoute';
-
-// function App() {
-//   return (
-//     <BrowserRouter>
-//       <Routes>
-//         <Route path="/" element={<Login />} />
-//         <Route
-//           path="/dashboard"
-//           element={
-//             <PrivateRoute>
-//               {/* Componente protegido, por ejemplo, Users o un Dashboard */}
-//               <Users />
-//             </PrivateRoute>
-//           }
-//         />
-//         <Route path="/users" element={<Users />} />
-//         <Route path="/units" element={<Units />} />
-//       </Routes>
-//     </BrowserRouter>
-//   );
-// }
-
-// export default App;
 import React from 'react';
-  import { BrowserRouter, Routes, Route } from 'react-router-dom';
-  import Login from './views/Login.jsx';
-  import Dashboard from './views/Dashboard.jsx';
+import { UserProvider } from './UserContext';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import MainLayout from './components/layout/MainLayout';
+import Dashboard from './views/Dashboard';
+import Register from './pages/admin/Register';
+import Users from './pages/admin/Users';
+import Units from './pages/admin/Units';
+import Login from './pages/auth/Login';
+import Home from './pages/admin/Home';
 
-  function App() {
-    return (
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-        </Routes>
-      </BrowserRouter>
-    );
-  }
+function App() {
+  return (
+    
+    <Router>
+      <Routes>
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="register" element={<Register />} />
+          <Route path="usuarios" element={<Users />} />
+          <Route path="unidades" element={<Units />} />
+        </Route>
+        <Route path="/login" element={<Login />} />
+        <Route path="/cerrar-sesion" element={<Navigate to="/login" />} />
+      </Routes>
+    </Router>
+  );
+}
 
-  export default App;
+export default App;

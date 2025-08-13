@@ -2,16 +2,24 @@ import React from 'react';
 
 const Dashboard = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-      <div className="p-8 rounded-lg shadow-lg w-full max-w-2xl text-center">
-        <h1 className="text-3xl font-bold mb-4">Bienvenido al Dashboard</h1>
-        <p className="text-lg">Esta es tu página de dashboard. Aquí puedes agregar contenido como estadísticas, gráficos o configuraciones.</p>
-        <button
-          onClick={() => alert('Función de logout simulada')}
-          className="mt-6 bg-red-600 text-white p-2 rounded hover:bg-red-700 transition duration-200"
-        >
-          Cerrar Sesión
-        </button>
+    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-128px)] bg-white">
+      {/* min-h calculado para descontar navbar + footer (ejemplo 64px + 64px) */}
+      <div
+        className="w-full h-full bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/fondo1.svg')" }}
+      ></div>
+
+      <div className="text-center pt-10 z-10 absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+        <h1 className="text-5xl font-black text-blue-950">Universidad Autónoma Tomás Frías</h1>
+        <h2 className="text-3xl font-semibold text-gray-700 mt-2">DATA CENTER</h2>
+        <p className="text-xl text-gray-600 mt-2">Bienvenido Victor</p>
+        <div className="mt-6 pointer-events-auto">
+          <img
+            src="/logo-uatf.png" // Coloca en public
+            alt="Data Center Illustration"
+            className="mx-auto rounded-lg shadow-md"
+          />
+        </div>
       </div>
     </div>
   );
