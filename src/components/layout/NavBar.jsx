@@ -36,10 +36,29 @@ const NavBar = () => {
     >
       <div className="px-3 py-3 lg:px-5 lg:pl-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center justify-start rtl:justify-end">
+          {/* Lado izquierdo */}
+          <div className="flex items-center justify-start rtl:justify-end space-x-4">
             {/* Logo o contenido adicional puede ir aquí si lo deseas */}
+            <a
+              href="https://uatf.edu.bo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-red-900 group"
+            >
+              <img
+                src="/logo-uatf.png"
+                alt="Logo UATF"
+                className="w-10 h-10 rounded-full"
+              />
+              <span className="ml-2 text-2xl font-extrabold tracking-wide">
+                U.A.T.F.
+              </span>
+            </a>
+            {/* Puedes agregar otros botones o enlaces aquí si quieres */}
           </div>
+          {/* Lado derecho */}
           <div className="flex items-center space-x-4">
+             {/* Buscador */}
             <div className="flex items-center space-x-2">
               <div className="mb-4">
                 <div className="relative">
@@ -66,6 +85,7 @@ const NavBar = () => {
                 </div>
               </div>
             </div>
+            {/* Menú de usuario */}
             <div className="flex items-center ms-3 relative" ref={dropdownRef}>
               <button
                 type="button"

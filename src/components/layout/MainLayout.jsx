@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import SideBar from '../layout/SideBar';  // Verifica que este path sea correcto
 import NavBar from '../layout/NavBar';
 import Footer from '../layout/Footer';
+import Dashboard from '../../views/Dashboard';
 
 const MainLayout = () => {
   return (
@@ -22,6 +23,12 @@ const MainLayout = () => {
           <Outlet />
         </main>
       </div>
+
+       {/* CONTENIDO PRINCIPAL */}
+        {/* <main className="flex-1 ml-64 mt-[64px] bg-white relative">
+          <Dashboard />
+        </main>
+       */}
 
       {/* Footer al final */}
       <footer className="bg-gray-100 py-4 text-center">

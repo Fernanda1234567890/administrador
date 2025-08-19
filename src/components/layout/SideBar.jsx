@@ -1,143 +1,475 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { Menu, X } from "lucide-react"; // Ícono hamburguesa y cerrar
+import { FaChevronRight } from "react-icons/fa"; // Ícono para submenús
+import FRONTIS from "../../assets/FRONTIS.png";
 
 const SideBar = () => {
+  const [openMenu, setOpenMenu] = useState(null); // Estado para manejar submenús
+  const [open, setOpen] = useState(false); // Estado para el sidebar completo (hamburguesa)
+
+  // Función para abrir/cerrar submenús
+  const toggleMenu = (menu) => {
+    setOpenMenu(openMenu === menu ? null : menu);
+  };
+
   return (
-    <aside
-      id="default-sidebar"
-      className="fixed top-0 left-0 z-50 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
-      aria-label="Sidebar"
-    >
-      <div className="h-full px-3 py-4 overflow-y-auto bg-gradient-to-b from-[#082F47] to-red-700 dark:from-[#082F47] dark:to-red-900">
-        <div className="flex items-center mb-4">
-          <img
-            className="w-12 h-12 rounded-full mr-3"
-            src="https://miro.medium.com/v2/resize:fit:1286/0*hINaDB9904rHMVNL"
-            alt="User profile"
-          />
-          <div>
-            <p className="text-white text-sm font-semibold">Bienvenido,</p>
-            <p className="text-white text-base font-bold">Victor</p>
+    <>
+      {/* Botón hamburguesa en móvil */}
+      <button
+        className="fixed top-4 left-4 z-50 p-2 rounded-md bg-[#082F47] text-white hover:bg-red-700 transition-colors duration-200 sm:hidden"
+        onClick={() => setOpen(!open)}
+        aria-label="Toggle menu"
+      >
+        <Menu size={24} />
+      </button>
+
+      {/* Sidebar */}
+      <aside
+        id="default-sidebar"
+        className={`fixed top-0 left-0 z-40 h-screen transition-transform duration-300 ease-in-out ${
+          open ? "translate-x-0" : "-translate-x-full"
+        } sm:translate-x-0`}
+        style={{ width: open ? "60%" : "0", minWidth: open ? "250px" : "0" }}
+      >
+        <div className="h-full w-64 sm:w-64 bg-gradient-to-b from-[#082F47] to-red-700 text-white p-4 overflow-y-auto">
+          {/* Botón de cerrar en móvil */}
+          <button
+            className="sm:hidden text-white mb-4 focus:outline-none"
+            onClick={() => setOpen(false)}
+          >
+            <X size={24} />
+          </button>
+
+          {/* Usuario */}
+          <div className="flex items-center mb-4">
+            <img
+              className="w-12 h-12 rounded-full mr-3"
+              src="https://miro.medium.com/v2/resize:fit:1286/0*hINaDB9904rHMVNL"
+              alt="User profile"
+            />
+            <span className="text-white font-bold">Usuario</span>
+          </div>
+
+          {/* Enlaces de navegación */}
+          <ul className="space-y-2 font-medium">
+            <li>
+              <Link
+                to="/register"
+                className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+              >
+                <span className="ml-3">Nuevo Registro</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/usuarios"
+                className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+              >
+                <span className="ml-3">Personas Registradas</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/facultades"
+                className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+              >
+                <span className="ml-3">Registrar Facultad</span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/unidades"
+                className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+              >
+                <span className="ml-3">Unidades</span>
+              </Link>
+            </li>
+
+            {/* Organización */}
+            <li>
+              <button
+                onClick={() => toggleMenu("organizacion")}
+                className={`flex items-center justify-between w-full p-2 rounded-lg transition-colors duration-200
+                  ${openMenu === "organizacion" 
+                    ? "bg-red-900 text-white"  // marcado en rojo cuando está abierto
+                    : "text-white hover:bg-gray-700" // estado normal
+                  }`}
+              >
+                <span className="ml-3">Organización</span>
+                <FaChevronRight
+                  className={`transition-transform duration-200 ${openMenu === "organizacion" ? "rotate-90" : ""}`}
+                />
+              </button>
+
+              {openMenu === "organizacion" && (
+                <ul className="pl-6 mt-2 space-y-1">
+                  <li>
+                    <Link
+                      to="/organizacion/registrar"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                    >
+                      Registrar nuevo
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/organizacion/ver"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                    >
+                      Ver registrados
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </li>
+
+            {/* Cargos Regulares */}
+            <li>
+              <button
+                onClick={() => toggleMenu("cargo-regular")}
+                className={`flex items-center justify-between w-full p-2 rounded-lg transition-colors duration-200
+                  ${openMenu === "cargo-regular"
+                    ? "bg-red-900 text-white"  // marcado en rojo cuando está abierto
+                    : "text-white hover:bg-gray-700" // estado normal
+                  }`}
+              >
+                <span className="ml-3">Cargos Regulares</span>
+                <FaChevronRight
+                  className={`transition-transform duration-200 ${openMenu === "cargo-regular" ? "rotate-90" : ""}`}
+                />
+              </button>
+
+              {openMenu === "cargo-regular" && (
+                <ul className="pl-6 mt-2 space-y-1">
+                  <li>
+                    <Link
+                      to="/cargo-regular/registrar"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                    >
+                      Registrar nuevo
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/cargo-regular/ver"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                    >
+                      Ver registrados
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </li>
+
+
+            {/* Tipo Unidades */}
+            <li>
+              <button
+                onClick={() => toggleMenu("tipo-unidades")}
+                className={`flex items-center justify-between w-full p-2 rounded-lg transition-colors duration-200
+                  ${openMenu === "tipo-unidades"
+                    ? "bg-red-900 text-white"  // marcado en rojo cuando está abierto
+                    : "text-white hover:bg-gray-700" // estado normal
+                  }`}
+              >
+                <span className="ml-3">Tipo de Unidades</span>
+                <FaChevronRight
+                  className={`transition-transform duration-200 ${
+                    openMenu === "tipo-unidades" ? "rotate-90" : ""
+                  }`}
+                />
+              </button>
+              {openMenu === "tipo-unidades" && (
+                <ul className="pl-6 mt-2 space-y-1">
+                  <li>
+                    <Link
+                      to="/tipo-unidades/registrar"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                    >
+                      Registrar nuevo
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/tipo-unidades/ver"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                    >
+                      Ver registrados
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </li>
+
+            {/* Personas */}
+            <li>
+              <button
+                onClick={() => toggleMenu("persona")}
+                className={`flex items-center justify-between w-full p-2 rounded-lg transition-colors duration-200
+                  ${openMenu === "persona"
+                    ? "bg-red-900 text-white"  // marcado en rojo cuando está abierto
+                    : "text-white hover:bg-gray-700" // estado normal
+                  }`}
+              >
+                <span className="ml-3">Personas</span>
+                <FaChevronRight
+                  className={`transition-transform duration-200 ${
+                    openMenu === "persona" ? "rotate-90" : ""
+                  }`}
+                />
+              </button>
+              {openMenu === "persona" && (
+                <ul className="pl-6 mt-2 space-y-1">
+                  <li>
+                    <Link
+                      to="/persona/registrar"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                    >
+                      Registrar nuevo
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/persona/ver"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                    >
+                      Ver registrados
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </li>
+
+            {/* Estudiantes */}
+            <li>
+              <button
+                onClick={() => toggleMenu("estudiantes")}
+                className={`flex items-center justify-between w-full p-2 rounded-lg transition-colors duration-200
+                  ${openMenu === "estudiantes"
+                    ? "bg-red-900 text-white"  // marcado en rojo cuando está abierto
+                    : "text-white hover:bg-gray-700" // estado normal
+                  }`}
+              >
+                <span className="ml-3">Estudiantes</span>
+                <FaChevronRight
+                  className={`transition-transform duration-200 ${
+                    openMenu === "estudiantes" ? "rotate-90" : ""
+                  }`}
+                />
+              </button>
+              {openMenu === "estudiantes" && (
+                <ul className="pl-6 mt-2 space-y-1">
+                  <li>
+                    <Link
+                      to="/estudiantes/registrar"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                    >
+                      Registrar nuevo
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/estudiantes/ver"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                    >
+                      Ver registrados
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </li>
+
+            {/* Docentes */}
+            <li>
+              <button
+                onClick={() => toggleMenu("docentes")}
+                className={`flex items-center justify-between w-full p-2 rounded-lg transition-colors duration-200
+                  ${openMenu === "docentes"
+                    ? "bg-red-900 text-white"  // marcado en rojo cuando está abierto
+                    : "text-white hover:bg-gray-700" // estado normal
+                  }`}
+              >
+                <span className="ml-3">Docentes</span>
+                <FaChevronRight
+                  className={`transition-transform duration-200 ${
+                    openMenu === "docentes" ? "rotate-90" : ""
+                  }`}
+                />
+              </button>
+              {openMenu === "docentes" && (
+                <ul className="pl-6 mt-2 space-y-1">
+                  <li>
+                    <Link
+                      to="/docentes/registrar"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                    >
+                      Registrar nuevo
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/docentes/ver"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                    >
+                      Ver registrados
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </li>
+
+            {/* Administrativos */}
+            <li>
+              <button
+                onClick={() => toggleMenu("administrativos")}
+                   className={`flex items-center justify-between w-full p-2 rounded-lg transition-colors duration-200
+                  ${openMenu === "administrativos"
+                    ? "bg-red-950 text-white"  // marcado en rojo cuando está abierto
+                    : "text-white hover:bg-gray-700" // estado normal
+                  }`}
+              >
+                <span className="ml-3">Administrativos</span>
+                <FaChevronRight
+                  className={`transition-transform duration-200 ${
+                    openMenu === "administrativos" ? "rotate-90" : ""
+                  }`}
+                />
+              </button>
+              {openMenu === "administrativos" && (
+                <ul className="pl-6 mt-2 space-y-1">
+                  <li>
+                    <Link
+                      to="/administrativos/registrar"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                    >
+                      Registrar nuevo
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/administrativos/ver"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                    >
+                      Ver registrados
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </li>
+
+            {/* Unidades */}
+            <li>
+              <button
+                onClick={() => toggleMenu("unidades")}
+                className={`flex items-center justify-between w-full p-2 rounded-lg transition-colors duration-200
+                  ${openMenu === "unidades"
+                    ? "bg-red-950 text-white"  // marcado en rojo cuando está abierto
+                    : "text-white hover:bg-gray-700" // estado normal
+                  }`}
+              >
+                <span className="ml-3">Unidades</span>
+                <FaChevronRight
+                  className={`transition-transform duration-200 ${
+                    openMenu === "unidades" ? "rotate-90" : ""
+                  }`}
+                />
+              </button>
+              {openMenu === "unidades" && (
+                <ul className="pl-6 mt-2 space-y-1">
+                  <li>
+                    <Link
+                      to="/unidades/registrar"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                    >
+                      Registrar nuevo
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/unidades/ver"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                    >
+                      Ver registrados
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </li>
+
+            {/* Cargos Intermedios */}
+            <li>
+              <button
+                onClick={() => toggleMenu("cargos-intermedios")}
+                 className={`flex items-center justify-between w-full p-2 rounded-lg transition-colors duration-200
+                  ${openMenu === "cargos-intermedios"
+                    ? "bg-red-950 text-white"  // marcado en rojo cuando está abierto
+                    : "text-white hover:bg-gray-700" // estado normal
+                  }`}
+              >
+                <span className="ml-3">Cargos Intermedios</span>
+                <FaChevronRight
+                  className={`transition-transform duration-200 ${
+                    openMenu === "cargos-intermedios" ? "rotate-90" : ""
+                  }`}
+                />
+              </button>
+              {openMenu === "cargos-intermedios" && (
+                <ul className="pl-6 mt-2 space-y-1">
+                  <li>
+                    <Link
+                      to="/cargos-intermedios/registrar"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                    >
+                      Registrar nuevo
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/cargos-intermedios/ver"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                    >
+                      Ver registrados
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </li>
+
+            {/* Logout */}
+            <li>
+              <Link
+                to="/cerrar-sesion"
+                className="flex items-center p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                onClick={() => setOpen(false)} // Cierra el sidebar al hacer logout en móvil
+              >
+                <span className="ml-3">Cerrar Sesión</span>
+              </Link>
+            </li>
+          </ul>
+
+          {/* Imagen */}
+          <div className="text-center mt-4">
+            <img
+              src={FRONTIS}
+              alt="Logo"
+              className="w-20 h-20 mx-auto mb-2 sm:w-40 sm:h-40"
+            />
+            <p className="text-white text-sm font-semibold">
+              UNIVERSIDAD AUTONOMA TOMAS FRIAS
+            </p>
           </div>
         </div>
-        <ul className="space-y-2 font-medium">
-          <li>
-            <a
-              href="https://uatf.edu.bo"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-red-900 group"
-            >
-              <img
-                src="/logo-uatf.png"
-                alt="Logo UATF"
-                className="w-10 h-10 rounded-full"
-              />
-              <span className="ml-2 text-2xl font-extrabold tracking-wide">
-                U.A.T.F.
-              </span>
-            </a>
-          </li>
-          <li>
-            <Link
-              to="/register"
-              className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-red-900 group"
-            >
-              <svg
-                className="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 18 18"
-              >
-                <path d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z" />
-              </svg>
-              <span className="flex-1 ms-3 whitespace-nowrap">Nuevo Registro</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/usuarios"
-              className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-red-900 group"
-            >
-              <svg
-                className="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 20 18"
-              >
-                <path d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z" />
-              </svg>
-              <span className="flex-1 ms-3 whitespace-nowrap">Personas Registradas</span>
-            </Link>
-          </li>
-                    <li>
-            <Link
-              to="/usuarios"
-              className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-red-900 group"
-            >
-              <svg
-                className="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 20 18"
-              >
-                <path d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z" />
-              </svg>
-              <span className="flex-1 ms-3 whitespace-nowrap">Registrar Facultad</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/unidades"
-              className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-red-900 group"
-            >
-              <svg
-                className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 16 20"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M1 17V2a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a2 2 0 0 0-2 2Zm0 0a2 2 0 0 0 2 2h12M5 15V1m8 18v-4"
-                />
-              </svg>
-              <span className="flex-1 ms-3 whitespace-nowrap">Unidades</span>
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/cerrar-sesion"
-              className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-red-900 group"
-            >
-              <svg
-                className="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 8h11m0 0-4-4m4 4-4 4m-5 3H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h3"
-                />
-              </svg>
-              <span className="flex-1 ms-3 whitespace-nowrap">Cerrar Sesión</span>
-            </Link>
-          </li>
-        </ul>
-      </div>
-    </aside>
+      </aside>
+
+      {/* Overlay para cerrar el sidebar en móvil */}
+      {open && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 sm:hidden"
+          onClick={() => setOpen(false)}
+        ></div>
+      )}
+    </>
   );
 };
 

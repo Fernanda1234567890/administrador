@@ -9,7 +9,7 @@ const Dashboard = () => {
         style={{ backgroundImage: "url('/fondo1.svg')" }}
       ></div>
 
-      <div className="text-center pt-10 z-10 absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+      <div className="text-center pt-10 z-10 flex flex-col items-center justify-center pointer-events-none">
         <h1 className="text-5xl font-black text-blue-950">Universidad Autónoma Tomás Frías</h1>
         <h2 className="text-3xl font-semibold text-gray-700 mt-2">DATA CENTER</h2>
         <p className="text-xl text-gray-600 mt-2">Bienvenido Victor</p>
