@@ -27,14 +27,12 @@ const SideBar = () => {
       {/* Sidebar */}
       <aside
         id="default-sidebar"
-        className={`fixed top-0 left-0 z-40 h-screen transition-transform duration-300 ease-in-out ${
-          open ? "translate-x-0" : "-translate-x-full"
-        } sm:translate-x-0`}
-        style={{ width: open ? "60%" : "0", minWidth: open ? "250px" : "0" }}
+        className={`fixed top-0 left-0 z-60 h-screen transition-transform duration-300 ease-in-out 
+        ${open ? "translate-x-0" : "-translate-x-full"} sm:translate-x-0 w-64`}
       >
-        <div className="h-full w-64 sm:w-64 bg-gradient-to-b from-[#082F47] to-red-700 text-white p-4 overflow-y-auto">
-          {/* Botón de cerrar en móvil */}
-          <button
+        <div className="h-full bg-gradient-to-b from-[#082F47] to-red-700 text-white p-4 overflow-y-auto">
+        {/* Botón de cerrar en móvil */}
+        <button
             className="sm:hidden text-white mb-4 focus:outline-none"
             onClick={() => setOpen(false)}
           >

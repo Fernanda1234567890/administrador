@@ -17,7 +17,7 @@ const Dashboard = () => {
           <img
             src="/logo-uatf.png" // Coloca en public
             alt="Data Center Illustration"
-            className="mx-auto rounded-lg shadow-md"
+            className="mx-auto rounded-lg "
           />
         </div>
       </div>
