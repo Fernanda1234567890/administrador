@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // 👈 importamos navigate
 
-const OrganizacionRegistro = () => {
+const OrganizacionRegistro = ({ onRegistrar, onClose }) => {
   const [formData, setFormData] = useState({
     tipo: "",
     descripcion: "",
   });
+
+  const navigate = useNavigate(); // 👈 inicializamos navigate
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -13,34 +16,35 @@ const OrganizacionRegistro = () => {
       [name]: value,
     }));
   };
-// Aquí después llamas a tu API para guardar
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Generar un ID automático para la organización
-    const newOrganizacion = {
-      id: Date.now(),
-      tipo: formData.tipo,
-      descripcion: formData.descripcion,
-    };
+    if (window.confirm("¿Está seguro de registrar la organización?")) {
+      const newOrganizacion = {
+        id: Date.now(),
+        tipo: formData.tipo,
+        descripcion: formData.descripcion,
+      };
 
-    // Guardar en localStorage (simulación de BD)
-    const data = JSON.parse(localStorage.getItem("organizaciones")) || [];
-    data.push(newOrganizacion);
-    localStorage.setItem("organizaciones", JSON.stringify(data));
+      const data = JSON.parse(localStorage.getItem("organizaciones")) || [];
+      data.push(newOrganizacion);
+      localStorage.setItem("organizaciones", JSON.stringify(data));
 
-    // Limpiar formulario
-    setFormData({ tipo: "", descripcion: "" });
+      setFormData({ tipo: "", descripcion: "" });
 
-    alert("Organización registrada con éxito ✅");
+      if (onRegistrar) onRegistrar(newOrganizacion);
+      if (onClose) onClose();
+
+      // 👇 Redirige automáticamente a la vista "ver organizaciones"
+      navigate("/organizacion/ver");
+    }
   };
 
-return (
-    <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow-lg">
+  return (
+    <div className="max-w-md mx-auto mt-6 bg-white p-6 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-4">Registrar Organización</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        
-        {/* Select tipo */}
         <div>
           <label className="block text-sm font-medium mb-1">Tipo</label>
           <select
@@ -57,7 +61,6 @@ return (
           </select>
         </div>
 
-        {/* Input descripción */}
         <div>
           <label className="block text-sm font-medium mb-1">Descripción</label>
           <input
@@ -70,10 +73,9 @@ return (
           />
         </div>
 
-        {/* Botón */}
         <button
           type="submit"
-          className="w-full bg-red-700 text-white py-2 px-4 rounded-lg hover:bg-red-800 transition"
+          className="w-full bg-red-800 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition"
         >
           Registrar
         </button>

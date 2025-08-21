@@ -1,16 +1,43 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const TipoUnidadesRegistro = () => {
-  const [formData, setFormData] = useState({ id: "", tipo: "", descripcion: "" });
+  const [formData, setFormData] = useState({ 
+    id: "", 
+    tipo: "", 
+    descripcion: "",
+  });
 
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const navigate = useNavigate();
+
+    useEffect(() => {
+      const editar = JSON.parse(localStorage.getItem("tipo-unidades-editar"));
+      if (editar) {
+        setFormData(editar);
+        localStorage.removeItem("tipo-unidades-editar");
+      }
+    }, []);
+
+  
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const existing = JSON.parse(localStorage.getItem("tipo-unidades")) || [];
+    
+    const index = existing.findIndex((c) => c.id === formData.id);
+    if(index >= 0){
+      existing[index] = formData;
+    }else{
+      existing.push(formData)
+    }
+
     localStorage.setItem("tipo-unidades", JSON.stringify([...existing, formData]));
     setFormData({ id: "", tipo: "", descripcion: "" });
     alert("Tipo de Unidad registrado correctamente");
+    navigate("/tipo-unidades/ver")
   };
 
   return (

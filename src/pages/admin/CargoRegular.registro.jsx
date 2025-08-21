@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CargoRegularRegistro = () => {
   const [formData, setFormData] = useState({
@@ -8,6 +9,16 @@ const CargoRegularRegistro = () => {
     nivelJerarquico: "",
   });
 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const editar = JSON.parse(localStorage.getItem("cargo-regular-editar"));
+    if (editar) {
+      setFormData(editar);
+      localStorage.removeItem("cargo-regular-editar");
+    }
+  }, []);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -15,15 +26,21 @@ const CargoRegularRegistro = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Guardar en localStorage
     const existing = JSON.parse(localStorage.getItem("cargo-regular")) || [];
-    const updated = [...existing, formData];
-    localStorage.setItem("cargo-regular", JSON.stringify(updated));
 
-    // Limpiar formulario
-    setFormData({ id: "", nombre: "", descripcion: "", nivelJerarquico: "" });
+    const index = existing.findIndex((c) => c.id === formData.id);
+    if (index >= 0) {
+      existing[index] = formData;
+    } else {
+      existing.push(formData);
+    }
 
-    alert("Cargo registrado correctamente");
+    localStorage.setItem("cargo-regular", JSON.stringify(existing));
+
+    alert("Cargo registrado correctamente ✅");
+
+    // Redirigir a la vista de ver
+    navigate("/cargo-regular/ver");
   };
 
   return (
