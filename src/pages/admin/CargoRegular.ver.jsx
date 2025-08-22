@@ -13,12 +13,20 @@ const CargoRegularVer = () => {
     setOrganizaciones(orgs);
   }, []);
 
-  const handleEliminar = (id) => {
-    if (window.confirm("¿Seguro que deseas eliminar este cargo?")) {
-      const updated = cargosRegulares.filter((cargo) => cargo.id !== id);
-      setCargosRegulares(updated);
-      localStorage.setItem("cargo-regular", JSON.stringify(updated));
-    }
+  // const handleEliminar = (id) => {
+  //   if (window.confirm("¿Seguro que deseas eliminar este cargo?")) {
+  //     const updated = cargosRegulares.filter((cargo) => cargo.id !== id);
+  //     setCargosRegulares(updated);
+  //     localStorage.setItem("cargo-regular", JSON.stringify(updated));
+  //   }
+  // };
+
+    const handleRegistrar = (nuevo) => {
+    setCargos((prev) => {
+      const updated = [...prev, nuevo];
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(updated));
+      return updated;
+    });
   };
 
   const handleActualizar = (cargo) => {

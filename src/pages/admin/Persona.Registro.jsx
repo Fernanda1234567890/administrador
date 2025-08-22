@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const PersonaRegistro = () => {
-  const navigate = useNavigate();
+const LOCAL_KEY = "personas";
+
+const PersonaRegistro = ({onRegitrar, onClose }) => {
+  
   const [formData, setFormData] = useState({
-    id: "",
+    // id: "",
     nombres: "",
     apellidos: "",
     ci: "",
@@ -15,6 +17,8 @@ const PersonaRegistro = () => {
     img: ""
   });
 
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -22,18 +26,29 @@ const PersonaRegistro = () => {
       [name]: value
     }));
   };
-
+  
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const newPersona = { ...formData };
+    if(window.confirm("¿Esta seguro de registrar a la persona?")){
+    const newPersona = { 
+      // id: Date.formData,
+      nombres: formData.nombres,
+      apellidos: formData.apellidos,
+      ci: formData.ci,
+      email: formData.email,
+      telefono: formData.telefono,
+      direccion: formData.direccion,
+      fechaNacimiento: formData.fechaNacimiento,
+      img: formData.img,
+     };
 
     const data = JSON.parse(localStorage.getItem("personas")) || [];
     data.push(newPersona);
     localStorage.setItem("personas", JSON.stringify(data));
 
     setFormData({
-      id: "",
+      // id: "",
       nombres: "",
       apellidos: "",
       ci: "",
@@ -44,9 +59,13 @@ const PersonaRegistro = () => {
       img: ""
     });
 
+    if (onRegistrar) onRegistrar(newPersona);
+      if (onClose) onClose();
+
     alert("Persona registrada con éxito ✅");
 
     navigate("/persona/ver");
+    }
   };
 
   return (
@@ -54,10 +73,10 @@ const PersonaRegistro = () => {
       <h2 className="text-2xl font-bold mb-4">Registrar Persona</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
 
-        <div>
+        {/* <div>
           <label>ID</label>
           <input type="text" name="id" value={formData.id} onChange={handleChange} className="w-full border rounded p-2" required />
-        </div>
+        </div> */}
 
         <div>
           <label>Nombres</label>

@@ -34,6 +34,7 @@ const TipoUnidadesVer = () => {
           <thead>
             <tr className="bg-blue-950 text-white">
               <th>ID</th><th>Tipo</th><th>Descripción</th>
+              <th className="p-3 text-left">Estado</th>
                <th className="p-3 text-left">Acciones</th>
             </tr>
           </thead>
@@ -45,7 +46,7 @@ const TipoUnidadesVer = () => {
                 <td>{i.descripcion}</td>
                 <td className="flex gap-2">
                   <button className="bg-yellow-500 text-white px-2 rounded" onClick={() => handleActualizar(i)}>Actualizar</button>
-                  <button className="bg-red-700 text-white px-2 rounded" onClick={() => handleEliminar(i.id)}>Eliminar</button>
+                  {/* <button className="bg-red-700 text-white px-2 rounded" onClick={() => handleEliminar(i.id)}>Eliminar</button> */}
                 </td>
               </tr>
             ))}

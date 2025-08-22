@@ -9,9 +9,33 @@ const CargoIntermedioVer = () => {
   }, []);
 
   const handleDelete = (id) => {
+    if (!window.confirm("¿Está seguro de eliminar este cargo intermedio?")) return;
     const updated = cargos.filter((c) => c.id !== id);
     setCargos(updated);
     localStorage.setItem("cargosIntermedios", JSON.stringify(updated));
+  };
+
+  const handleActualizar = (cargo) => {
+    const nuevoNombre = prompt("Nuevo nombre:", cargo.nombre);
+    const nuevaDescripcion = prompt("Nueva descripción:", cargo.descripcion);
+    const nuevoNivel = prompt("Nuevo nivel jerárquico:", cargo.nivelJerarquico);
+    const nuevoIdUnidad = prompt("Nuevo ID Unidad:", cargo.idUnidad);
+
+    if (nuevoNombre && nuevaDescripcion && nuevoNivel && nuevoIdUnidad) {
+      const updated = cargos.map((c) =>
+        c.id === cargo.id
+          ? {
+              ...c,
+              nombre: nuevoNombre,
+              descripcion: nuevaDescripcion,
+              nivelJerarquico: nuevoNivel,
+              idUnidad: nuevoIdUnidad,
+            }
+          : c
+      );
+      setCargos(updated);
+      localStorage.setItem("cargosIntermedios", JSON.stringify(updated));
+    }
   };
 
   return (
@@ -30,6 +54,7 @@ const CargoIntermedioVer = () => {
               <th className="p-3 text-left">Descripción</th>
               <th className="p-3 text-left">Nivel Jerárquico</th>
               <th className="p-3 text-left">ID Unidad</th>
+              <th className="p-3 text-left">Estado</th>
               <th className="p-3 text-left">Acciones</th>
             </tr>
           </thead>
@@ -41,16 +66,19 @@ const CargoIntermedioVer = () => {
                 <td className="p-3">{cargo.descripcion}</td>
                 <td className="p-3">{cargo.nivelJerarquico}</td>
                 <td className="p-3">{cargo.idUnidad}</td>
-                <td className="p-3 space-x-2">
+                <td className="p-3 space-x-2 flex">
                   <button
+                    onClick={() => handleActualizar(cargo)}
+                    className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-700"
+                  >
+                    Actualizar
+                  </button>
+                  {/* <button
                     onClick={() => handleDelete(cargo.id)}
                     className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-800"
                   >
                     Eliminar
-                  </button>
-                  <button className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-700">
-                    Actualizar
-                  </button>
+                  </button> */}
                 </td>
               </tr>
             ))}

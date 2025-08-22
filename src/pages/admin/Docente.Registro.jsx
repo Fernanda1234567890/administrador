@@ -1,57 +1,84 @@
-import React, { useState } from "react";
+// Docente.Registro.jsx
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const DocenteRegistro = () => {
-  const [formData, setFormData] = useState({
-    id: "",
-    carrera: "",
-    idPersona: "",
-  });
+  const [formData, setFormData] = useState({ id: "", carrera: "", id_persona: "" });
+  const [personas, setPersonas] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setPersonas(JSON.parse(localStorage.getItem("personas")) || []);
+  }, []);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    let data = JSON.parse(localStorage.getItem("docentes")) || [];
-    data.push(formData);
-    localStorage.setItem("docentes", JSON.stringify(data));
-    alert("Docente registrado correctamente ✅");
-    setFormData({ id: "", carrera: "", idPersona: "" });
+
+    if (window.confirm("¿Está seguro de registrar al docente?")) {
+      const newDocente = {
+        id: Date.now(),
+        carrera: formData.carrera,
+        id_persona: formData.id_persona,
+      };
+
+      const existing = JSON.parse(localStorage.getItem("docentes")) || [];
+      existing.push(newDocente);
+      localStorage.setItem("docentes", JSON.stringify(existing));
+
+      setFormData({ id: "", carrera: "", id_persona: "" });
+
+      alert("✅ Docente registrado correctamente");
+
+      // Redirige a la lista de docentes
+      navigate("/docentes/ver");
+    }
   };
 
   return (
-    <div className="p-6 min-h-screen dark:bg-white">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">Registrar Docente</h2>
-      <form onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded-lg shadow-md">
+    <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded shadow-lg">
+      <h2 className="text-2xl font-bold mb-4">Registrar Docente</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
           name="id"
+          placeholder="ID"
           value={formData.id}
           onChange={handleChange}
-          placeholder="ID"
-          className="w-full border p-2 rounded"
           required
+          className="w-full border rounded p-2"
         />
         <input
           type="text"
           name="carrera"
+          placeholder="Carrera"
           value={formData.carrera}
           onChange={handleChange}
-          placeholder="Carrera"
-          className="w-full border p-2 rounded"
           required
+          className="w-full border rounded p-2"
         />
-        <input
-          type="text"
-          name="idPersona"
-          value={formData.idPersona}
+        <select
+          name="id_persona"
+          value={formData.id_persona}
           onChange={handleChange}
-          placeholder="ID Persona"
-          className="w-full border p-2 rounded"
           required
-        />
-        <button type="submit" className="bg-blue-700 text-white px-4 py-2 rounded">
+          className="w-full border rounded p-2"
+        >
+          <option value="">Selecciona Persona</option>
+          {personas.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.nombres} {p.apellidos}
+            </option>
+          ))}
+        </select>
+        <button
+          type="submit"
+          className="w-full bg-red-700 text-white py-2 rounded hover:bg-red-800"
+        >
           Registrar
         </button>
       </form>

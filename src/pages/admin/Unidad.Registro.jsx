@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const UnidadRegistro = () => {
+const LOCAL_KEY = "unidades";
+
+const UnidadRegistro = ({ onRegitrar, onClose }) => {
   const [formData, setFormData] = useState({
     id: "",
     nombre: "",
@@ -11,14 +14,33 @@ const UnidadRegistro = () => {
     idTipoUnidad: "",
   });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    const navigate = useNavigate();
+  
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value
+      }));
+    };
 
+    
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if(window.confirm("¿Esta seguro de registrar la Unidad?")){
+    const newUnidad = { 
+    id:Date.formData,
+    nombre:formData.nombre ,
+    descripcion:formData.descripcion ,
+    logo:formData.logo ,
+    responsable:formData.responsable ,
+    dependeDe:formData.dependeDe, 
+    idTipoUnidad:formData.idTipoUnidad ,
+    };
+
     const data = JSON.parse(localStorage.getItem("unidades")) || [];
-    data.push(formData);
+    data.push(newUnidad);
     localStorage.setItem("unidades", JSON.stringify(data));
     alert("Unidad registrada correctamente ✅");
     setFormData({
@@ -30,6 +52,13 @@ const UnidadRegistro = () => {
       dependeDe: "",
       idTipoUnidad: "",
     });
+      if (onRegistrar) onRegistrar(newUnidad);
+      if (onClose) onClose();
+
+    alert("Persona registrada con éxito ✅");
+
+    navigate("/unidades/ver");
+    }
   };
 
   return (

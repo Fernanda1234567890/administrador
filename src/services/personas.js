@@ -1,7 +1,7 @@
 import axios from 'axios'
 import React from 'react'
 
-const personas = () => {
+const personasData = () => {
     const getData = async () => {
         try {
             const respuesta = await axios.get('http://localhost:3000/api/persona')
@@ -15,4 +15,4 @@ const personas = () => {
         getData
     }
 }
-export default personas
+export default personasData

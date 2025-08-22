@@ -1,13 +1,15 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CargoIntermedioRegistro = () => {
   const [formData, setFormData] = useState({
-    id: "",
     nombre: "",
     descripcion: "",
     nivelJerarquico: "",
-    idUnidad: ""
+    idUnidad: "",
   });
+
+  const navigate = useNavigate(); // Para redirigir después de registrar
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,17 +18,28 @@ const CargoIntermedioRegistro = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const cargos = JSON.parse(localStorage.getItem("cargosIntermedios")) || [];
-    cargos.push(formData);
-    localStorage.setItem("cargosIntermedios", JSON.stringify(cargos));
-    alert("Cargo intermedio registrado con éxito ✅");
-    setFormData({
-      id: "",
-      nombre: "",
-      descripcion: "",
-      nivelJerarquico: "",
-      idUnidad: ""
-    });
+
+    if (window.confirm("¿Está seguro de registrar este cargo intermedio?")) {
+      const newCargo = {
+        id: Date.now(), // Genera un ID único automáticamente
+        ...formData,
+      };
+
+      const cargos = JSON.parse(localStorage.getItem("cargosIntermedios")) || [];
+      localStorage.setItem("cargosIntermedios", JSON.stringify([...cargos, newCargo]));
+
+      setFormData({
+        nombre: "",
+        descripcion: "",
+        nivelJerarquico: "",
+        idUnidad: "",
+      });
+
+      alert("Cargo intermedio registrado con éxito ✅");
+
+      // Redirigir automáticamente a la vista de cargos intermedios
+      navigate("/cargos-intermedios/ver");
+    }
   };
 
   return (
@@ -38,15 +51,6 @@ const CargoIntermedioRegistro = () => {
         onSubmit={handleSubmit}
         className="bg-white shadow-md rounded-lg p-6 space-y-4"
       >
-        <input
-          type="text"
-          name="id"
-          placeholder="ID"
-          value={formData.id}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-          required
-        />
         <input
           type="text"
           name="nombre"

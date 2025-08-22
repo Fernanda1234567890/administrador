@@ -1,71 +1,107 @@
 // EstudianteVer.jsx
 import React, { useEffect, useState } from "react";
+import estudiantesData from "../../services/estudiantes";
+import personasData from "../../services/personas";
 
 const EstudianteVer = () => {
-  const [items, setItems] = useState([]);
+  const [estudiantes, setEstudiantes] = useState([]);
   const [personas, setPersonas] = useState([]);
+  const { getData } = estudiantesData();
+  const { getPerson } = personasData();
+
+  const init = async () => {
+    const respuesta = await getData()
+    const people = await getPerson()
+    setEstudiantes(respuesta.data)
+    setPersonas(people.data)
+  }
 
   useEffect(() => {
-    setItems(JSON.parse(localStorage.getItem("estudiantes")) || []);
-    setPersonas(JSON.parse(localStorage.getItem("personas")) || []);
+    init()
   }, []);
 
-  const getNombrePersona = (id) => personas.find(p => p.id === id)?.nombres + " " + personas.find(p => p.id === id)?.apellidos || "";
+  
+
+  const getNombrePersona = (id) => {
+    const persona = personas.find((p) => p.id === id);
+    return persona ? `${persona.nombres} ${persona.apellidos}` : "";
+  };
 
   const handleEliminar = (id) => {
-    if(!window.confirm("Eliminar este estudiante?")) return;
-    const updated = items.filter(i => i.id !== id);
-    setItems(updated);
+    if (!window.confirm("¿Seguro que quieres eliminar este estudiante?")) return;
+
+    const updated = estudiantes.filter((est) => est.id !== id);
+    setEstudiantes(updated);
     localStorage.setItem("estudiantes", JSON.stringify(updated));
   };
 
-  const handleActualizar = (i) => {
-    const ru = prompt("Nuevo RU:", i.ru);
-    const carrera = prompt("Nueva carrera:", i.carrera);
-    if(ru && carrera){
-      const updated = items.map(it => it.id === i.id ? {...it, ru, carrera} : it);
-      setItems(updated);
+  const handleActualizar = (est) => {
+    const nuevoRu = prompt("Nuevo RU:", est.ru);
+    const nuevaCarrera = prompt("Nueva carrera:", est.carrera);
+
+    if (nuevoRu && nuevaCarrera) {
+      const updated = estudiantes.map((e) =>
+        e.id === est.id ? { ...e, ru: nuevoRu, carrera: nuevaCarrera } : e
+      );
+      setEstudiantes(updated);
       localStorage.setItem("estudiantes", JSON.stringify(updated));
     }
   };
 
   return (
-    <div className="p-6 min-h-screen">
-      <h2 className="text-2xl font-bold mb-4">Estudiantes Registrados</h2>
-      {items.length === 0 ? <p>No hay registros</p> :
-      <table className="w-full border-collapse bg-white shadow rounded-lg">
-        <thead>
-          <tr className="bg-blue-950 text-white">
-            <th>ID</th><th>RU</th><th>Carrera</th><th>Persona</th> 
-            <th className="p-3 text-left">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map(i => (
-            <tr key={i.id} className="border-b hover:bg-gray-100">
-              <td>{i.id}</td>
-              <td>{i.ru}</td>
-              <td>{i.carrera}</td>
-              <td>{getNombrePersona(i.id_persona)}</td>
+    <>
+      <h2 className="text-2xl font-bold mb-4 text-gray-800 text-left">
+        Estudiantes Registrados
+      </h2>
+
+      <div className="p-6 sm:p-2 lg:p-12 min-h-screen dark:bg-white">
+        <div className="max-w-4xl mx-auto">
+          {estudiantes.length === 0 ? (
+            <p className="text-gray-600">No hay estudiantes registrados.</p>
+          ) : (
+            <table className="w-full border-collapse bg-white shadow-lg rounded-lg">
+              <thead>
+                <tr className="bg-blue-950 text-white">
+                  <th className="p-3 text-left">ID</th>
+                  <th className="p-3 text-left">RU</th>
+                  <th className="p-3 text-left">Carrera</th>
+                  <th className="p-3 text-left">Persona</th>
+                  <th className="p-3 text-left">Estado</th>
+                  <th className="p-3 text-left">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {estudiantes.map((est) => (
+                  <tr
+                    key={est.id}
+                    className="border-b hover:bg-gray-100 transition"
+                  >
+                    <td className="p-3">{est.id}</td>
+                    <td className="p-3">{est.ru}</td>
+                    <td className="p-3">{est.carrera}</td>
+                    <td className="p-3">{getNombrePersona(est.id_persona)}</td>
                     <td className="p-3 flex gap-2">
                       <button
-                        onClick={() => handleActualizar(org)}
+                        onClick={() => handleActualizar(est)}
                         className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
                       >
                         Actualizar
                       </button>
-                      <button
-                        onClick={() => handleEliminar(org.id)}
+                      {/* <button
+                        onClick={() => handleEliminar(est.id)}
                         className="bg-red-700 text-white px-2 py-1 rounded hover:bg-red-800"
                       >
                         Eliminar
-                      </button>
+                      </button> */}
                     </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>}
-    </div>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
+    </>
   );
 };
 
