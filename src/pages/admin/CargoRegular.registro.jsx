@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 
 const CargoRegularRegistro = () => {
   const [formData, setFormData] = useState({
-    id: "",
     nombre: "",
     descripcion: "",
     nivelJerarquico: "",
@@ -47,19 +46,6 @@ const CargoRegularRegistro = () => {
     <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-4">Registrar Cargo Regular</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* ID */}
-        <div>
-          <label className="block text-sm font-medium mb-1">ID</label>
-          <input
-            type="text"
-            name="id"
-            value={formData.id}
-            onChange={handleChange}
-            className="w-full border border-gray-300 rounded-md p-2"
-            required
-          />
-        </div>
-
         {/* Nombre */}
         <div>
           <label className="block text-sm font-medium mb-1">Nombre</label>

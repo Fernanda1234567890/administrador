@@ -1,15 +1,24 @@
 // DocenteVer.jsx
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import estudiantesData from "../../services/estudiantes";
+import personasData from "../../services/personas";
 
 const DocenteVer = () => {
   const [docentes, setDocentes] = useState([]);
   const [personas, setPersonas] = useState([]);
+  const { getData } = estudiantesData();
+  const { getPerson } = personasData();
 
-  useEffect(() => {
-    const dataDoc = JSON.parse(localStorage.getItem("docentes")) || [];
-    const dataPer = JSON.parse(localStorage.getItem("personas")) || [];
-    setDocentes(dataDoc);
-    setPersonas(dataPer);
+  const init = async () => {
+    const respuesta = await getData()
+    const people = await getData()
+    setDocentes(respuesta.data)
+    setPersonas(people.data)
+  }
+
+  useEffect(() =>{
+    init()
   }, []);
 
   const getNombrePersona = (id) => {
@@ -38,9 +47,17 @@ const DocenteVer = () => {
   };
 
   return (
-    <div className="p-6 min-h-screen dark:bg-white">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">Lista de Docentes</h2>
-
+    <div className="p-6 sm:p-2 lg:p-12 min-h-screen dark:bg-white">
+      <div className="flex justify-between items-center mb-4">
+       <h2 className="text-2xl font-bold mb-4 text-gray-800">Lista de Docentes</h2>
+        <button
+          onClick={() => navigate("/docente/registro")}
+          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
+        >
+          Registrar
+        </button>
+      </div>
+      <div className="max-w-3xl mx-auto">
       {docentes.length === 0 ? (
         <p className="text-gray-600">No hay docentes registrados.</p>
       ) : (
@@ -67,18 +84,13 @@ const DocenteVer = () => {
                   >
                     Actualizar
                   </button>
-                  {/* <button
-                    onClick={() => handleEliminar(doc.id)}
-                    className="bg-red-700 text-white px-2 py-1 rounded hover:bg-red-800"
-                  >
-                    Eliminar
-                  </button> */}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       )}
+    </div>
     </div>
   );
 };

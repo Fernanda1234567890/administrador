@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 
 const TipoUnidadesRegistro = () => {
   const [formData, setFormData] = useState({ 
-    id: "", 
     tipo: "", 
     descripcion: "",
   });
@@ -56,15 +55,6 @@ const TipoUnidadesRegistro = () => {
     <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-4">Registrar Tipo de Unidad</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input 
-          type="text" 
-          name="id" 
-          placeholder="ID" 
-          value={formData.id} 
-          onChange={handleChange} 
-          required 
-          className="w-full border rounded p-2" 
-        />
         <input 
           type="text" 
           name="tipo" 

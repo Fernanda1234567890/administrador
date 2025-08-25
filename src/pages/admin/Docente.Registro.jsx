@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const DocenteRegistro = () => {
-  const [formData, setFormData] = useState({ id: "", carrera: "", id_persona: "" });
+  const [formData, setFormData] = useState({ carrera: "", id_persona: "" });
   const [personas, setPersonas] = useState([]);
   const navigate = useNavigate();
 
@@ -43,15 +43,6 @@ const DocenteRegistro = () => {
     <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded shadow-lg">
       <h2 className="text-2xl font-bold mb-4">Registrar Docente</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          name="id"
-          placeholder="ID"
-          value={formData.id}
-          onChange={handleChange}
-          required
-          className="w-full border rounded p-2"
-        />
         <input
           type="text"
           name="carrera"

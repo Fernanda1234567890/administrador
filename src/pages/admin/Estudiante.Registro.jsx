@@ -1,10 +1,8 @@
-// EstudianteRegistro.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const EstudianteRegistro = ({ onRegistrar, onClose }) => {
-  const [formData, setFormData] = useState({ 
-    id:"", 
+  const [formData, setFormData] = useState({  
     ru:"", 
     carrera:"", 
     id_persona:"" 

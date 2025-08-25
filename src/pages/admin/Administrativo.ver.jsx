@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import administrativosData from "../../services/administrativos";
 import personasData from "../../services/personas";
 //import { getAdministrativos, deleteAdministrativo } from "../services/administrativoService";
@@ -7,12 +8,12 @@ const AdministrativoVer = () => {
   const [administrativos, setAdministrativos] = useState([]);
   const [personas, setPersonas] = useState([]);
   const { getData } = administrativosData();
-  const { getData:getPErson } = personasData();
+  const { getData:getPerson } = personasData();
   
 
   const init = async () => {
     const respuesta = await getData()
-    const people = await getPErson()
+    const people = await getPerson()
     setAdministrativos(respuesta.data)
     setPersonas(people.data)
   }
@@ -20,8 +21,6 @@ const AdministrativoVer = () => {
   useEffect(() => {
     init()
   }, []);
- 
-
 
   const getNombrePersona = (id) => {
     const persona = personas.find((p) => p.id === id);
@@ -49,11 +48,22 @@ const AdministrativoVer = () => {
   };
 
   return (
-    <div className="p-6 min-h-screen dark:bg-white">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">Lista de Administrativos</h2>
+    <div className="p-6 sm:p-2 lg:p-12 min-h-screen dark:bg-white">
+      <div className="flex justify-between items-center mb-4">
+      <h2 className="text-2xl font-bold mb-4 text-gray-800">
+        Lista de Administrativos</h2>
+        <button
+          onClick={() => navigate("/administrativos/registro")}
+          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
+        >
+          Registrar
+        </button>
+      </div>
+      <div className="max-w-3xl mx-auto">
       {administrativos.length === 0 ? (
         <p className="text-gray-600">No hay administrativos registrados.</p>
       ) : (
+        
         <table className="w-full border-collapse bg-white shadow-lg rounded-lg">
           <thead>
             <tr className="bg-blue-950 text-white">
@@ -74,20 +84,34 @@ const AdministrativoVer = () => {
                   >
                     Actualizar
                   </button>
-                  <button
-                    onClick={() => handleEliminar(adm.id)}
-                    className="bg-red-700 text-white px-2 py-1 rounded hover:bg-red-800"
-                  >
-                    Eliminar
-                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       )}
+      </div>
     </div>
   );
 };
 
 export default AdministrativoVer;
+
+// const { getData, deleteData, updateData } = administrativosData();
+
+// // Eliminar
+// const handleEliminar = async (id) => {
+//   if (!window.confirm("¿Seguro que quieres eliminar este administrativo?")) return;
+
+//   await deleteData(id); // 🔹 elimina en backend
+//   init(); // 🔹 vuelve a traer la lista actualizada
+// };
+
+// // Actualizar
+// const handleActualizar = async (adm) => {
+//   const nuevoIdPersona = prompt("Nuevo ID Persona:", adm.id_persona);
+//   if (!nuevoIdPersona) return;
+
+//   await updateData(adm.id, { ...adm, id_persona: nuevoIdPersona }); // 🔹 actualiza en backend
+//   init(); // 🔹 vuelve a traer la lista actualizada
+// };

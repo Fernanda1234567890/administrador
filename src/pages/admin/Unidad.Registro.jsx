@@ -5,7 +5,6 @@ const LOCAL_KEY = "unidades";
 
 const UnidadRegistro = ({ onRegitrar, onClose }) => {
   const [formData, setFormData] = useState({
-    id: "",
     nombre: "",
     descripcion: "",
     logo: "",
@@ -44,7 +43,6 @@ const UnidadRegistro = ({ onRegitrar, onClose }) => {
     localStorage.setItem("unidades", JSON.stringify(data));
     alert("Unidad registrada correctamente ✅");
     setFormData({
-      id: "",
       nombre: "",
       descripcion: "",
       logo: "",
@@ -68,15 +66,6 @@ const UnidadRegistro = ({ onRegitrar, onClose }) => {
         onSubmit={handleSubmit}
         className="bg-white shadow-md rounded-lg p-6 space-y-4"
       >
-        <input
-          type="text"
-          name="id"
-          placeholder="ID"
-          value={formData.id}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-          required
-        />
         <input
           type="text"
           name="nombre"

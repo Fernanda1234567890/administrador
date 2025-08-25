@@ -46,8 +46,9 @@ const OrganizacionRegistro = ({ onRegistrar, onClose }) => {
       <h2 className="text-2xl font-bold mb-4">Registrar Organización</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-1">Tipo</label>
+          <label htmlFor="tipo" className="block text-sm font-medium mb-1">Tipo</label>
           <select
+            id="tipo"
             name="tipo"
             value={formData.tipo}
             onChange={handleChange}
@@ -62,8 +63,9 @@ const OrganizacionRegistro = ({ onRegistrar, onClose }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Descripción</label>
+          <label htmlFor="descripcion" className="block text-sm font-medium mb-1">Descripción</label>
           <input
+            id="descripcion"
             type="text"
             name="descripcion"
             value={formData.descripcion}

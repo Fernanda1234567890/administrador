@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
-
-const LOCAL_KEY = "personas";
+import { useNavigate } from "react-router-dom";
+import personasData from "../../services/personas";
+//const LOCAL_KEY = "personas";
 
 const PersonaVer = () => {
   const [personas, setPersonas] = useState([]);
-  const [showForm, setShowForm] = useState(false);
+  const { getData } = personasData();
+
+  const init = async () => {
+    const respuesta = await getData();
+    setPersonas(respuesta.data);
+  }
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem(LOCAL_KEY)) || [];
-    setPersonas(data);
+    init();
   }, []);
 
   const handleActualizar = (persona) => {
@@ -56,23 +61,31 @@ const PersonaVer = () => {
     localStorage.setItem(LOCAL_KEY, JSON.stringify(updated));
   };
 
-  const handleEliminar = (id) => {
-    if (!window.confirm("¿Seguro que quieres eliminar esta persona?")) return;
-    const updated = personas.filter((p) => p.id !== id);
-    setPersonas(updated);
-    localStorage.setItem(LOCAL_KEY, JSON.stringify(updated));
-  };
+  // const handleEliminar = (id) => {
+  //   if (!window.confirm("¿Seguro que quieres eliminar esta persona?")) return;
+  //   const updated = personas.filter((p) => p.id !== id);
+  //   setPersonas(updated);
+  //   localStorage.setItem(LOCAL_KEY, JSON.stringify(updated));
+  // };
 
   return (
-    <div className="max-w-5xl mx-auto mt-6">
-      <h2 className="text-2xl font-bold mb-4">Personas Registradas</h2>
-
+    <div className="p-6 sm:p-2 lg:p-12 min-h-screen dark:bg-white">
+      <div className="flex justify-between items-center mb-4">
+       <h2 className="text-2xl font-bold mb-4">Personas Registradas</h2>
+        <button
+          onClick={() => navigate("/persona/registro")}
+          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
+        >
+          Registrar
+        </button>
+      </div>
+      <div className="max-w-3xl mx-auto">
       {personas.length === 0 ? (
         <p>No hay personas registradas.</p>
       ) : (
         <table className="w-full border-collapse bg-white shadow rounded-lg">
           <thead>
-            <tr className="bg-red-700 text-white">
+            <tr className="bg-blue-950 text-white">
               <th className="p-3 text-left">ID</th>
               <th className="p-3 text-left">Nombres</th>
               <th className="p-3 text-left">Apellidos</th>
@@ -113,18 +126,14 @@ const PersonaVer = () => {
                   >
                     Actualizar
                   </button>
-                  {/* <button
-                    onClick={() => handleEliminar(p.id)}
-                    className="bg-red-700 text-white px-2 py-1 rounded hover:bg-red-800"
-                  >
-                    Eliminar
-                  </button> */}
+
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       )}
+    </div>
     </div>
   );
 };

@@ -1,50 +1,52 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import cargosIntermediosData from "../../services/cargosIntermedios";
 
 const CargoIntermedioVer = () => {
   const [cargos, setCargos] = useState([]);
+  const navigate = useNavigate();
+  const { getData, updateData, deleteData } = cargosIntermediosData();
+
+  const init = async () => {
+    const res = await getData();
+    console.log("Respuesta cargos intermedios:", res);
+    setCargos(Array.isArray(res) ? res : []);
+  };
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("cargosIntermedios")) || [];
-    setCargos(data);
+    init();
   }, []);
 
-  const handleDelete = (id) => {
-    if (!window.confirm("¿Está seguro de eliminar este cargo intermedio?")) return;
-    const updated = cargos.filter((c) => c.id !== id);
-    setCargos(updated);
-    localStorage.setItem("cargosIntermedios", JSON.stringify(updated));
-  };
+  // const handleEliminar = async (id) => {
+  //   if (!window.confirm("¿Seguro que quieres eliminar este cargo intermedio?")) return;
+  //   await deleteData(id);
+  //   init();
+  // };
 
-  const handleActualizar = (cargo) => {
+  const handleActualizar = async (cargo) => {
     const nuevoNombre = prompt("Nuevo nombre:", cargo.nombre);
     const nuevaDescripcion = prompt("Nueva descripción:", cargo.descripcion);
-    const nuevoNivel = prompt("Nuevo nivel jerárquico:", cargo.nivelJerarquico);
-    const nuevoIdUnidad = prompt("Nuevo ID Unidad:", cargo.idUnidad);
 
-    if (nuevoNombre && nuevaDescripcion && nuevoNivel && nuevoIdUnidad) {
-      const updated = cargos.map((c) =>
-        c.id === cargo.id
-          ? {
-              ...c,
-              nombre: nuevoNombre,
-              descripcion: nuevaDescripcion,
-              nivelJerarquico: nuevoNivel,
-              idUnidad: nuevoIdUnidad,
-            }
-          : c
-      );
-      setCargos(updated);
-      localStorage.setItem("cargosIntermedios", JSON.stringify(updated));
+    if (nuevoNombre && nuevaDescripcion) {
+      await updateData(cargo.id, { ...cargo, nombre: nuevoNombre, descripcion: nuevaDescripcion });
+      init();
     }
   };
+ return (
+    <div className="p-6 sm:p-2 lg:p-12 min-h-screen dark:bg-white">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold text-gray-800">Cargos Intermedios</h2>
+        <button
+          onClick={() => navigate("/cargo-intermedio/registro")}
+          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
+        >
+          Registrar
+        </button>
+      </div>
 
-  return (
-    <div className="p-6 lg:p-12 min-h-screen dark:bg-white">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">
-        Cargos Intermedios Registrados
-      </h2>
+      <div className="max-w-3xl mx-auto">
       {cargos.length === 0 ? (
-        <p className="text-gray-600">No hay cargos intermedios registrados.</p>
+        <p>No hay cargos intermedios registrados.</p>
       ) : (
         <table className="w-full border-collapse bg-white shadow-lg rounded-lg">
           <thead>
@@ -52,9 +54,6 @@ const CargoIntermedioVer = () => {
               <th className="p-3 text-left">ID</th>
               <th className="p-3 text-left">Nombre</th>
               <th className="p-3 text-left">Descripción</th>
-              <th className="p-3 text-left">Nivel Jerárquico</th>
-              <th className="p-3 text-left">ID Unidad</th>
-              <th className="p-3 text-left">Estado</th>
               <th className="p-3 text-left">Acciones</th>
             </tr>
           </thead>
@@ -64,27 +63,20 @@ const CargoIntermedioVer = () => {
                 <td className="p-3">{cargo.id}</td>
                 <td className="p-3">{cargo.nombre}</td>
                 <td className="p-3">{cargo.descripcion}</td>
-                <td className="p-3">{cargo.nivelJerarquico}</td>
-                <td className="p-3">{cargo.idUnidad}</td>
-                <td className="p-3 space-x-2 flex">
+                <td className="p-3 flex gap-2">
                   <button
                     onClick={() => handleActualizar(cargo)}
-                    className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-700"
+                    className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
                   >
                     Actualizar
                   </button>
-                  {/* <button
-                    onClick={() => handleDelete(cargo.id)}
-                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-800"
-                  >
-                    Eliminar
-                  </button> */}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       )}
+    </div>
     </div>
   );
 };

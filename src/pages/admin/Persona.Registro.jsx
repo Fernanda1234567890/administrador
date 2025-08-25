@@ -69,15 +69,13 @@ const PersonaRegistro = ({onRegitrar, onClose }) => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow-lg">
+    <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">Registrar Persona</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-
         {/* <div>
           <label>ID</label>
           <input type="text" name="id" value={formData.id} onChange={handleChange} className="w-full border rounded p-2" required />
         </div> */}
-
         <div>
           <label>Nombres</label>
           <input type="text" name="nombres" value={formData.nombres} onChange={handleChange} className="w-full border rounded p-2" required />

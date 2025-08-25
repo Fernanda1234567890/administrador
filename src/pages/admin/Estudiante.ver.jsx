@@ -1,13 +1,13 @@
-// EstudianteVer.jsx
 import React, { useEffect, useState } from "react";
 import estudiantesData from "../../services/estudiantes";
 import personasData from "../../services/personas";
+import { useNavigate } from "react-router-dom";
 
 const EstudianteVer = () => {
   const [estudiantes, setEstudiantes] = useState([]);
   const [personas, setPersonas] = useState([]);
   const { getData } = estudiantesData();
-  const { getPerson } = personasData();
+  const { getDara:getPerson } = personasData();
 
   const init = async () => {
     const respuesta = await getData()
@@ -19,8 +19,6 @@ const EstudianteVer = () => {
   useEffect(() => {
     init()
   }, []);
-
-  
 
   const getNombrePersona = (id) => {
     const persona = personas.find((p) => p.id === id);
@@ -49,13 +47,20 @@ const EstudianteVer = () => {
   };
 
   return (
-    <>
+   <div className="p-6 sm:p-2 lg:p-12 min-h-screen dark:bg-white">
+      <div className="flex justify-between items-center mb-4">
       <h2 className="text-2xl font-bold mb-4 text-gray-800 text-left">
         Estudiantes Registrados
       </h2>
+      <button
+          onClick={() => navigate("/estudiantes/registro")}
+          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
+        >
+          Registrar
+        </button>
+      </div>
 
-      <div className="p-6 sm:p-2 lg:p-12 min-h-screen dark:bg-white">
-        <div className="max-w-4xl mx-auto">
+      <div className="max-w-3xl mx-auto">
           {estudiantes.length === 0 ? (
             <p className="text-gray-600">No hay estudiantes registrados.</p>
           ) : (
@@ -87,12 +92,6 @@ const EstudianteVer = () => {
                       >
                         Actualizar
                       </button>
-                      {/* <button
-                        onClick={() => handleEliminar(est.id)}
-                        className="bg-red-700 text-white px-2 py-1 rounded hover:bg-red-800"
-                      >
-                        Eliminar
-                      </button> */}
                     </td>
                   </tr>
                 ))}
@@ -101,7 +100,6 @@ const EstudianteVer = () => {
           )}
         </div>
       </div>
-    </>
   );
 };
 

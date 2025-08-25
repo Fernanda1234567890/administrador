@@ -1,66 +1,76 @@
 import React, { useEffect, useState } from "react";
-import OrganizacionRegistro from "./Organizacion.registro.jsx";
+import { useNavigate } from "react-router-dom";
+import organizacionData from "../../services/organizacion"; 
+import OrganizacionRegistro from "./Organizacion.Registro";
 
 const OrganizacionVer = () => {
   const [organizaciones, setOrganizaciones] = useState([]);
+  const navigate = useNavigate();
+  const { getData,createData, updateData, deleteData} = organizacionData();
   const [showForm, setShowForm] = useState(false);
 
+
+    const init = async () => {
+    const res = await getData();
+    setOrganizaciones(res.data);
+  };
+
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("organizaciones")) || [];
-    setOrganizaciones(data);
+    init();
   }, []);
 
-  // const handleEliminar = (id) => {
-  //   if (!window.confirm("¿Seguro que quieres eliminar esta organización?")) return;
+  // Registrar nueva organización
+  const handleRegistrar = async (newOrg) => {
+    try {
+      await createData(newOrg);
+      setShowForm(false);
+      init(); // recargar lista desde backend
+    } catch (error) {
+      console.error("Error al registrar organización:", error);
+    }
+  };
 
-  //   const updated = organizaciones.filter((org) => org.id !== id);
-  //   setOrganizaciones(updated);
-  //   localStorage.setItem("organizaciones", JSON.stringify(updated));
-  // };
-
-  const handleActualizar = (org) => {
+  // Actualizar organización
+  const handleActualizar = async (org) => {
     const nuevoTipo = prompt("Nuevo tipo:", org.tipo);
     const nuevaDescripcion = prompt("Nueva descripción:", org.descripcion);
 
     if (nuevoTipo && nuevaDescripcion) {
-      const updated = organizaciones.map((o) =>
-        o.id === org.id ? { ...o, tipo: nuevoTipo, descripcion: nuevaDescripcion } : o
-      );
-      setOrganizaciones(updated);
-      localStorage.setItem("organizaciones", JSON.stringify(updated));
+      try {
+        await updateData(org.id, {
+          ...org,
+          tipo: nuevoTipo,
+          descripcion: nuevaDescripcion,
+        });
+        init(); // recargar lista
+      } catch (error) {
+        console.error("Error al actualizar organización:", error);
+      }
     }
   };
 
-  const handleRegistrar = (newOrg) => {
-    setOrganizaciones((prev) => {
-    const updated = [...prev, newOrg];
-    localStorage.setItem("organizaciones", JSON.stringify(updated));
-    return updated;
-  });
-};
-  return (
-    <>
-      <h2 className="text-2xl font-bold mb-4 text-gray-800 text-left">
-        Organizaciones registradas
-      </h2>
+  // Eliminar organización
+  const handleEliminar = async (id) => {
+    if (!window.confirm("¿Seguro que quieres eliminar esta organización?")) return;
+    try {
+      await deleteData(id);
+      init(); // recargar lista
+    } catch (error) {
+      console.error("Error al eliminar organización:", error);
+    }
+  };
 
-      <div className="mb-4">
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+   return (
+    <div className="p-6 sm:p-2 lg:p-12 min-h-screen dark:bg-white">
+      <div className="flex justify-between items-center mb-4">
+      <h2 className="text-2xl font-bold mb-4">Organizaciones registradas</h2>
+       <button
+          onClick={() => navigate("/organizacion/registro")}
+          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
         >
-          {showForm ? "Cerrar formulario" : "Registrar organización"}
+          Registrar
         </button>
       </div>
-
-      {showForm && (
-        <OrganizacionRegistro
-          onRegistrar={handleRegistrar}
-          onClose={() => setShowForm(false)}
-        />
-      )}
-
-      <div className="p-6 sm:p-2 lg:p-12 min-h-screen dark:bg-white">
         <div className="max-w-3xl mx-auto">
           {organizaciones.length === 0 ? (
             <p className="text-gray-600">No hay organizaciones registradas.</p>
@@ -71,7 +81,6 @@ const OrganizacionVer = () => {
                   <th className="p-3 text-left">ID</th>
                   <th className="p-3 text-left">Tipo</th>
                   <th className="p-3 text-left">Descripción</th>
-                  <th className="p-3 text-left">Estado</th>
                   <th className="p-3 text-left">Acciones</th>
                 </tr>
               </thead>
@@ -88,22 +97,14 @@ const OrganizacionVer = () => {
                       >
                         Actualizar
                       </button>
-                      {/* <button
-                        onClick={() => handleEliminar(org.id)}
-                        className="bg-red-700 text-white px-2 py-1 rounded hover:bg-red-800"
-                      >
-                        Eliminar
-                      </button> */}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           )}
-        </div>
-      </div>
-    </>
+       </div>
+     </div>
   );
 };
-
 export default OrganizacionVer;

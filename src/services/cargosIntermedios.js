@@ -1,35 +1,33 @@
 import axios from 'axios'
 import React from 'react'
 
-const unidadesData = () => {
-  const getData = async ()=>{
-    try {
-      const respuesta = await axios.get('http://localhost:3000/api/unidad')
-      return respuesta 
-    } catch (error) {
-      console.log(error)
+const cargosIntermediosData = () => {
+    const getData = async () => {
+        try {
+            const respuesta = await axios.get('http://localhost:3000/api/cargo-intermedio')
+            return respuesta
+        }
+        catch(error) {
+            console.log(error)
+        }
     }
-  } 
-
-  return {
-    getData
-  }
+    return{
+        getData
+    }
 }
+export default cargosIntermediosData
 
-export default unidadesData
-
-// ../../services/unidades.js
 // import axios from "axios";
 
-// const API_URL = "http://localhost:3000/api/unidades";
+// const API_URL = "http://localhost:3000/api/cargos-intermedios";
 
-// const unidadesData = () => {
+// const cargosIntermediosData = () => {
 //   const getData = async () => {
 //     try {
 //       const respuesta = await axios.get(API_URL);
 //       return respuesta;
 //     } catch (error) {
-//       console.error("Error al obtener unidades:", error);
+//       console.error("Error al obtener cargos intermedios:", error);
 //       return { data: [] };
 //     }
 //   };
@@ -39,7 +37,7 @@ export default unidadesData
 //       const respuesta = await axios.post(API_URL, nuevo);
 //       return respuesta;
 //     } catch (error) {
-//       console.error("Error al crear unidad:", error);
+//       console.error("Error al crear cargo intermedio:", error);
 //     }
 //   };
 
@@ -48,7 +46,7 @@ export default unidadesData
 //       const respuesta = await axios.put(`${API_URL}/${id}`, updated);
 //       return respuesta;
 //     } catch (error) {
-//       console.error("Error al actualizar unidad:", error);
+//       console.error("Error al actualizar cargo intermedio:", error);
 //     }
 //   };
 
@@ -57,11 +55,11 @@ export default unidadesData
 //       const respuesta = await axios.delete(`${API_URL}/${id}`);
 //       return respuesta;
 //     } catch (error) {
-//       console.error("Error al eliminar unidad:", error);
+//       console.error("Error al eliminar cargo intermedio:", error);
 //     }
 //   };
 
 //   return { getData, createData, updateData, deleteData };
 // };
 
-// export default unidadesData;
+// export default cargosIntermediosData;

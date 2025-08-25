@@ -1,37 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import cargosRegularesData from "../../services/cargosRegulares";
 
 const CargoRegularVer = () => {
   const [cargosRegulares, setCargosRegulares] = useState([]);
-  const [organizaciones, setOrganizaciones] = useState([]);
-  const navigate = useNavigate();
+  const { getData } = cargosRegularesData();
 
+ const init = async () => {
+  const respuesta = await getData();
+  setCargosRegulares(respuesta.data);
+ }
   useEffect(() => {
-    const cargos = JSON.parse(localStorage.getItem("cargo-regular")) || [];
-    const orgs = JSON.parse(localStorage.getItem("organizaciones")) || [];
-    setCargosRegulares(cargos);
-    setOrganizaciones(orgs);
+    init () ;
   }, []);
 
-  // const handleEliminar = (id) => {
-  //   if (window.confirm("¿Seguro que deseas eliminar este cargo?")) {
-  //     const updated = cargosRegulares.filter((cargo) => cargo.id !== id);
-  //     setCargosRegulares(updated);
-  //     localStorage.setItem("cargo-regular", JSON.stringify(updated));
-  //   }
-  // };
 
-    const handleRegistrar = (nuevo) => {
-    setCargos((prev) => {
-      const updated = [...prev, nuevo];
-      localStorage.setItem(LOCAL_KEY, JSON.stringify(updated));
-      return updated;
-    });
-  };
+  const handleActualizar = async (cargo) => {
+    const nuevoNombre = prompt("Nuevo nombre:", cargo.nombre);
+    const nuevaDescripcion = prompt("Nueva descripción:", cargo.descripcion);
+    const nuevoNivel = prompt("Nuevo nivel jerárquico:", cargo.nivelJerarquico);
 
-  const handleActualizar = (cargo) => {
-    localStorage.setItem("cargo-regular-editar", JSON.stringify(cargo));
-    navigate("/cargo-regular/registro");
+    if (nuevoNombre && nuevaDescripcion && nuevoNivel) {
+      await updateData(cargo.id, {
+        ...cargo,
+        nombre: nuevoNombre,
+        descripcion: nuevaDescripcion,
+        nivelJerarquico: nuevoNivel,
+      });
+      init(); // vuelve a cargar la lista
+    }
   };
 
   return (
@@ -59,6 +56,8 @@ const CargoRegularVer = () => {
                 <th className="p-3 text-left">Nombre</th>
                 <th className="p-3 text-left">Descripción</th>
                 <th className="p-3 text-left">Nivel Jerárquico</th>
+                <th className="p-3 text-left">Administrativos / Unidad</th>
+
                 <th className="p-3 text-left">Estado</th>
                 <th className="p-3 text-left">Acciones</th>
               </tr>
@@ -70,7 +69,18 @@ const CargoRegularVer = () => {
                   <td className="p-3" data-label="Nombre">{cargo.nombre}</td>
                   <td className="p-3" data-label="Descripción">{cargo.descripcion}</td>
                   <td className="p-3" data-label="Nivel Jerárquico">{cargo.nivelJerarquico}</td>
-                  <td className="p-3" data-label="Estadon">
+                  {/* <td className="p-3">
+                    {cargo.administrativoCargoRegularUnidades?.length > 0 ? (
+                      cargo.administrativoCargoRegularUnidades.map((rel) => (
+                        <span key={rel.id} className="block">
+                          {rel.administrativo.nombres} ({rel.unidad.tipo})
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-gray-500">Sin administrativos</span>
+                    )}
+                  </td> */}
+                  {/* <td className="p-3" data-label="Estadon">
                     {organizaciones.find((org) => org.id === cargo.organizacionId)?.tipo || "Activo o inactivo"}
                   </td>
                   <td className="p-3 flex gap-2" data-label="Acciones">
@@ -79,14 +89,14 @@ const CargoRegularVer = () => {
                       className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
                     >
                       Actualizar
-                    </button>
+                    </button> */}
                     {/* <button
                       onClick={() => handleEliminar(cargo.id)}
                       className="bg-red-700 text-white px-2 py-1 rounded hover:bg-red-800"
                     >
                       Eliminar
                     </button> */}
-                  </td>
+                  {/* </td> */}
                 </tr>
               ))}
             </tbody>
