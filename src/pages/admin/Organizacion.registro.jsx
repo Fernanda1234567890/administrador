@@ -5,6 +5,7 @@ const OrganizacionRegistro = ({ onRegistrar, onClose }) => {
   const [formData, setFormData] = useState({
     tipo: "",
     descripcion: "",
+    estado:"",
   });
 
   const navigate = useNavigate(); // 👈 inicializamos navigate
@@ -25,6 +26,7 @@ const OrganizacionRegistro = ({ onRegistrar, onClose }) => {
         id: Date.now(),
         tipo: formData.tipo,
         descripcion: formData.descripcion,
+        estado: formData.estado,
       };
 
       const data = JSON.parse(localStorage.getItem("organizaciones")) || [];
@@ -69,6 +71,18 @@ const OrganizacionRegistro = ({ onRegistrar, onClose }) => {
             type="text"
             name="descripcion"
             value={formData.descripcion}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-md p-2"
+            required
+          />
+        </div>
+         <div>
+          <label htmlFor="estado" className="block text-sm font-medium mb-1">Estado</label>
+          <input
+            id="estado"
+            type="text"
+            name="destado"
+            value={formData.estado}
             onChange={handleChange}
             className="w-full border border-gray-300 rounded-md p-2"
             required

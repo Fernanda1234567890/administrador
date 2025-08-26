@@ -11,6 +11,7 @@ const UnidadRegistro = ({ onRegitrar, onClose }) => {
     responsable: "",
     dependeDe: "",
     idTipoUnidad: "",
+    estado:"",
   });
 
     const navigate = useNavigate();
@@ -36,6 +37,7 @@ const UnidadRegistro = ({ onRegitrar, onClose }) => {
     responsable:formData.responsable ,
     dependeDe:formData.dependeDe, 
     idTipoUnidad:formData.idTipoUnidad ,
+    estado:formData.estado,
     };
 
     const data = JSON.parse(localStorage.getItem("unidades")) || [];
@@ -49,6 +51,7 @@ const UnidadRegistro = ({ onRegitrar, onClose }) => {
       responsable: "",
       dependeDe: "",
       idTipoUnidad: "",
+      estado:"",
     });
       if (onRegistrar) onRegistrar(newUnidad);
       if (onClose) onClose();
@@ -111,6 +114,14 @@ const UnidadRegistro = ({ onRegitrar, onClose }) => {
           name="idTipoUnidad"
           placeholder="ID Tipo Unidad"
           value={formData.idTipoUnidad}
+          onChange={handleChange}
+          className="w-full border p-2 rounded"
+        />
+        <input
+          type="text"
+          name="estado"
+          placeholder="Estado"
+          value={formData.estado}
           onChange={handleChange}
           className="w-full border p-2 rounded"
         />

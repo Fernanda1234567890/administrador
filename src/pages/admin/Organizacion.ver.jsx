@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import organizacionData from "../../services/organizacion"; 
-import OrganizacionRegistro from "./Organizacion.Registro";
+//import OrganizacionRegistro from "./Organizacion.Registro";
 
 const OrganizacionVer = () => {
   const [organizaciones, setOrganizaciones] = useState([]);
@@ -81,6 +81,7 @@ const OrganizacionVer = () => {
                   <th className="p-3 text-left">ID</th>
                   <th className="p-3 text-left">Tipo</th>
                   <th className="p-3 text-left">Descripción</th>
+                  <th className="p-3 text-left">Estado</th>
                   <th className="p-3 text-left">Acciones</th>
                 </tr>
               </thead>

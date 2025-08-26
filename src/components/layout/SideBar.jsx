@@ -23,7 +23,7 @@ const SideBar = () => {
   return (
     <>
       {/* Botón hamburguesa en móvil para modo completo */}
-      {!isCompact && (
+      {/* {!isCompact && (
         <button
           className="fixed top-4 left-4 z-50 p-2 rounded-md bg-[#082F47] text-white hover:bg-red-700 transition-colors duration-200 sm:hidden"
           onClick={() => setOpen(!open)}
@@ -31,7 +31,7 @@ const SideBar = () => {
         >
           <Menu size={24} />
         </button>
-      )}
+      )} */}
 
       {/* Sidebar Completo */}
       {!isCompact && (

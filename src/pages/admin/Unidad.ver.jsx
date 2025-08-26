@@ -73,9 +73,9 @@ const UnidadVer = () => {
               <th className="p-3 text-left">ID</th>
               <th className="p-3 text-left">Nombre</th>
               <th className="p-3 text-left">Tipo</th>
-              {/* <th className="p-3 text-left">Organización</th> */}
               <th className="p-3 text-left">Cargos Intermedios</th>
               <th className="p-3 text-left">Administrativos / Cargo Regular</th>
+              <th className="p-3 text-left">Estado</th>
               <th className="p-3 text-left">Acciones</th>
             </tr>
           </thead>
@@ -84,11 +84,14 @@ const UnidadVer = () => {
               <tr key={unidad.id} className="border-b hover:bg-gray-100">
                 <td className="p-3">{unidad.id}</td>
                 <td className="p-3">{unidad.nombre}</td>
-                <td className="p-3">{tipos.find((t) => t.id === unidad.tipoUnidadId)?.nombre || "Sin tipo"}</td>
-               
+                <td className="p-3">
+                  {tipos.find((t) => t.id === unidad.tipoUnidadId)?.nombre || "Sin tipo"}
+                </td>
                 <td className="p-3">
                   {unidad.cargosIntermedios?.length > 0
-                    ? unidad.cargosIntermedios.map((c) => <span key={c.id}>{c.nombre}</span>)
+                    ? unidad.cargosIntermedios.map((c) => (
+                        <span key={c.id}>{c.nombre}</span>
+                      ))
                     : "Sin cargos"}
                 </td>
                 <td className="p-3">
@@ -100,6 +103,21 @@ const UnidadVer = () => {
                       ))
                     : "Sin administrativos"}
                 </td>
+
+                {/* 🔹 Estado */}
+                <td className="p-3">
+                  {unidad.estado ? (
+                    <span className="px-2 py-1 bg-green-200 text-green-800 rounded-lg text-sm">
+                      Activo
+                    </span>
+                  ) : (
+                    <span className="px-2 py-1 bg-red-200 text-red-800 rounded-lg text-sm">
+                      Inactivo
+                    </span>
+                  )}
+                </td>
+
+                {/* 🔹 Acciones */}
                 <td className="p-3 flex gap-2">
                   <button
                     onClick={() => handleActualizar(unidad)}
@@ -111,6 +129,7 @@ const UnidadVer = () => {
               </tr>
             ))}
           </tbody>
+
         </table>
       )}
     </div>
