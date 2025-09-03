@@ -68,15 +68,21 @@ const CargoIntermedioRegistro = () => {
           className="w-full border p-2 rounded"
           required
         ></textarea>
-        <input
-          type="text"
-          name="nivelJerarquico"
-          placeholder="Nivel Jerárquico"
-          value={formData.nivelJerarquico}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-          required
-        />
+         <div>
+          <label className="block text-sm font-medium mb-1">Nivel Jerárquico</label>
+          <select
+            name="nivelJerarquico"
+            value={formData.nivelJerarquico}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-md p-2"
+            required
+          >
+            <option value="">Seleccione un nivel</option>
+            <option value="Alto">Alto</option>
+            <option value="Medio">Medio</option>
+            <option value="Bajo">Bajo</option>
+          </select>
+        </div>
         <input
           type="text"
           name="idUnidad"
@@ -87,8 +93,8 @@ const CargoIntermedioRegistro = () => {
           required
         />
         <button
-          type="submit"
-          className="bg-blue-900 text-white px-4 py-2 rounded hover:bg-blue-700"
+          type="submit" 
+          className="w-full bg-red-700 text-white py-2 px-4 rounded-lg hover:bg-red-800"
         >
           Registrar
         </button>

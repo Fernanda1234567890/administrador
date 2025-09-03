@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react"; // Asegúrate de importar useEffect
+import React, { useState, useEffect } from "react"; 
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { tipoUn } from "../../data/tipoUn"; 
 
 const TipoUnidadesRegistro = () => {
   const [formData, setFormData] = useState({ 
@@ -55,15 +56,20 @@ const TipoUnidadesRegistro = () => {
     <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-4">Registrar Tipo de Unidad</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input 
-          type="text" 
-          name="tipo" 
-          placeholder="Tipo" 
-          value={formData.tipo} 
-          onChange={handleChange} 
-          required 
-          className="w-full border rounded p-2" 
-        />
+        <select
+          name="tipo"
+          value={formData.tipo}
+          onChange={handleChange}
+          required
+          className="w-full border rounded p-2"
+        >
+          <option value="">Selecciona un tipo</option>
+          {tipoUn.map((tipo, index) => (
+            <option key={index} value={tipo}>
+              {tipo}
+            </option>
+          ))}
+        </select>
         <input 
           type="text" 
           name="descripcion" 

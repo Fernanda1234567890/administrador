@@ -1,6 +1,7 @@
 // Docente.Registro.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { listaCarrerasyFac } from "../../data/listaCarrerasyFac";
 
 const DocenteRegistro = () => {
   const [formData, setFormData] = useState({ carrera: "", id_persona: "" });
@@ -43,32 +44,48 @@ const DocenteRegistro = () => {
     <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded shadow-lg">
       <h2 className="text-2xl font-bold mb-4">Registrar Docente</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input
-          type="text"
+        <select
           name="carrera"
-          placeholder="Carrera"
           value={formData.carrera}
           onChange={handleChange}
-          required
-          className="w-full border rounded p-2"
-        />
-        <select
-          name="id_persona"
-          value={formData.id_persona}
-          onChange={handleChange}
-          required
-          className="w-full border rounded p-2"
+          className="border p-2 rounded w-full"
         >
-          <option value="">Selecciona Persona</option>
-          {personas.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.nombres} {p.apellidos}
+          <option value="">Selecciona una carrera</option>
+          {listaCarrerasyFac.map((carrera, index) => (
+            <option key={index} value={carrera}>
+              {carrera}
             </option>
           ))}
         </select>
+        <input
+          type="text"
+          name="id_persona"
+          value={formData.id_persona}
+          onChange={handleChange}
+          placeholder="ID de la Persona"
+          required
+          className="w-full border rounded p-2"
+        />
+          <div>
+            <label htmlFor="estado" className="block text-sm font-medium mb-1">
+              Estado
+            </label>
+            <select
+              id="estado"
+              name="estado"
+              value={formData.estado}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-md p-2"
+              required
+            >
+              <option value="">Seleccione un estado</option>
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+          </div>
         <button
           type="submit"
-          className="w-full bg-red-700 text-white py-2 rounded hover:bg-red-800"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800"
         >
           Registrar
         </button>

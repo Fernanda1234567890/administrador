@@ -10,27 +10,37 @@ const OrganizacionVer = () => {
   const [showForm, setShowForm] = useState(false);
 
 
-    const init = async () => {
-    const res = await getData();
-    setOrganizaciones(res.data);
+   // ✅ Inicializar datos desde backend
+  const init = async () => {
+    try {
+      const resOrg = await getData(); // tu service ya hace fetch
+      setOrganizaciones(resOrg.data); // aseguramos que sea array
+    } catch (error) {
+      console.error("Error al obtener organizaciones:", error);
+      setOrganizaciones([]); // fallback
+    }
   };
 
   useEffect(() => {
-    init();
+    const fetchOrganizaciones = async () => {
+      const res = await fetch("http://localhost:3000/organizacion");
+      const json = await res.json();
+      setOrganizaciones(json.data); // ✅ aquí guardamos SOLO el array
+    };
+    fetchOrganizaciones();
   }, []);
 
-  // Registrar nueva organización
+// Registrar nueva organización
   const handleRegistrar = async (newOrg) => {
     try {
       await createData(newOrg);
-      setShowForm(false);
-      init(); // recargar lista desde backend
+      init(); // recargar lista
     } catch (error) {
       console.error("Error al registrar organización:", error);
     }
   };
 
-  // Actualizar organización
+// Actualizar organización
   const handleActualizar = async (org) => {
     const nuevoTipo = prompt("Nuevo tipo:", org.tipo);
     const nuevaDescripcion = prompt("Nueva descripción:", org.descripcion);
@@ -46,17 +56,6 @@ const OrganizacionVer = () => {
       } catch (error) {
         console.error("Error al actualizar organización:", error);
       }
-    }
-  };
-
-  // Eliminar organización
-  const handleEliminar = async (id) => {
-    if (!window.confirm("¿Seguro que quieres eliminar esta organización?")) return;
-    try {
-      await deleteData(id);
-      init(); // recargar lista
-    } catch (error) {
-      console.error("Error al eliminar organización:", error);
     }
   };
 

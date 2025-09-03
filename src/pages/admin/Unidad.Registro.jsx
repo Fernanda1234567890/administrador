@@ -117,14 +117,19 @@ const UnidadRegistro = ({ onRegitrar, onClose }) => {
           onChange={handleChange}
           className="w-full border p-2 rounded"
         />
-        <input
-          type="text"
-          name="estado"
-          placeholder="Estado"
-          value={formData.estado}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-        />
+        
+          <select
+            id="estado"
+            name="estado"
+            value={formData.estado}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-md p-2"
+            required
+          >
+            <option value="">Seleccione un estado</option>
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+          </select>
 
         <button
           type="submit"

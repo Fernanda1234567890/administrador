@@ -83,7 +83,8 @@ const PersonaRegistro = ({onRegitrar, onClose }) => {
 
         <div>
           <label>Apellidos</label>
-          <input type="text" name="apellidos" value={formData.apellidos} onChange={handleChange} className="w-full border rounded p-2" required />
+          <input type=
+          "text" name="apellidos" value={formData.apellidos} onChange={handleChange} className="w-full border rounded p-2" required />
         </div>
 
         <div>

@@ -53,24 +53,38 @@ const AdministrativoRegistro = () => {
         onSubmit={handleSubmit}
         className="space-y-4 bg-white p-6 rounded-lg shadow-md"
       >
-        <select
-          name="idPersona"
-          value={formData.idPersona}
-          onChange={handleChange}
-          className="w-full border p-2 rounded"
-          required
-        >
-          <option value="">Selecciona Persona</option>
-          {personas.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.nombres} {p.apellidos}
-            </option>
-          ))}
-        </select>
+      <input
+        type="text"
+        name="idPersona"
+        value={formData.idPersona}
+        onChange={handleChange}
+        placeholder="ID de la Persona"
+        className="w-full border p-2 rounded"
+        required
+      />
+
+      <div>
+        <label htmlFor="estado" className="block text-sm font-medium mb-1">
+           Estado
+        </label>
+          <select
+            id="estado"
+              name="estado"
+              value={formData.estado}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-md p-2"
+              required
+            >
+              <option value="">Seleccione un estado</option>
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+          </div>
+
 
         <button
           type="submit"
-          className="bg-blue-700 text-white px-4 py-2 rounded"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800"
         >
           Registrar
         </button>

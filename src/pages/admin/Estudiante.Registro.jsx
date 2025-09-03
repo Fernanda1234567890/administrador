@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { listaCarrerasyFac } from "../../data/listaCarrerasyFac"; 
 
 const EstudianteRegistro = ({ onRegistrar, onClose }) => {
   const [formData, setFormData] = useState({  
@@ -63,18 +64,22 @@ const EstudianteRegistro = ({ onRegistrar, onClose }) => {
         />
 
         {/* Carrera */}
-        <input 
-          type="text" 
-          name="carrera" 
-          placeholder="Carrera" 
-          value={formData.carrera} 
-          onChange={handleChange} 
-          required 
-          className="w-full border rounded p-2" 
-        />
+        <select
+          name="carrera"
+          value={formData.carrera}
+          onChange={handleChange}
+          className="border p-2 rounded w-full"
+        >
+          <option value="">Selecciona una carrera</option>
+          {listaCarrerasyFac.map((carrera, index) => (
+            <option key={index} value={carrera}>
+              {carrera}
+            </option>
+          ))}
+        </select>
 
         {/* Seleccionar Persona */}
-        <select 
+        <input 
           name="id_persona" 
           value={formData.id_persona} 
           onChange={handleChange} 
@@ -87,12 +92,29 @@ const EstudianteRegistro = ({ onRegistrar, onClose }) => {
               {p.nombres} {p.apellidos}
             </option>
           ))}
-        </select>
+        </input>
+        <div>
+            <label htmlFor="estado" className="block text-sm font-medium mb-1">
+              Estado
+            </label>
+            <select
+              id="estado"
+              name="estado"
+              value={formData.estado}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-md p-2"
+              required
+            >
+              <option value="">Seleccione un estado</option>
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+          </div>
 
         {/* Botón Registrar */}
         <button 
-          type="submit" 
-          className="w-full bg-red-700 text-white py-2 rounded hover:bg-red-800"
+        type="submit"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800"
         >
           Registrar
         </button>
