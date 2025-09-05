@@ -1,19 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { postData } from "../../services/api"; 
 
-const LOCAL_KEY = "personas";
 
-const PersonaRegistro = ({onRegitrar, onClose }) => {
+const PersonaRegistro = ({onRegistrar, onClose }) => {
   
   const [formData, setFormData] = useState({
-    // id: "",
     nombres: "",
     apellidos: "",
     ci: "",
     email: "",
     telefono: "",
     direccion: "",
-    fechaNacimiento: "",
+    fecha_nac: "",
     img: ""
   });
 
@@ -27,44 +26,31 @@ const PersonaRegistro = ({onRegitrar, onClose }) => {
     }));
   };
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if(window.confirm("¿Esta seguro de registrar a la persona?")){
-    const newPersona = { 
-      // id: Date.formData,
+    const nuevaPersona = { 
+      
       nombres: formData.nombres,
       apellidos: formData.apellidos,
       ci: formData.ci,
       email: formData.email,
       telefono: formData.telefono,
       direccion: formData.direccion,
-      fechaNacimiento: formData.fechaNacimiento,
+      fecha_nac: formData.fecha_nac,
       img: formData.img,
      };
 
-    const data = JSON.parse(localStorage.getItem("personas")) || [];
-    data.push(newPersona);
-    localStorage.setItem("personas", JSON.stringify(data));
-
-    setFormData({
-      // id: "",
-      nombres: "",
-      apellidos: "",
-      ci: "",
-      email: "",
-      telefono: "",
-      direccion: "",
-      fechaNacimiento: "",
-      img: ""
-    });
-
-    if (onRegistrar) onRegistrar(newPersona);
+      try {
+      const response = await postData("http://localhost:3000/api/persona", nuevaPersona);
+      alert("Persona registrada con éxito");
+      setFormData({ nombres: "", apellidos: "", ci: "", email: "", telefono: "", direccion: "", fecha_nac: "", img: "" });
+      if (onRegistrar) onRegistrar(response);
+      navigate("/persona/ver");
       if (onClose) onClose();
-
-    alert("Persona registrada con éxito ✅");
-
-    navigate("/persona/ver");
+    } catch (error) {
+      alert("Error al registrar: " + error.message);
+      console.error(error);
     }
   };
 
@@ -72,10 +58,6 @@ const PersonaRegistro = ({onRegitrar, onClose }) => {
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-4">Registrar Persona</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* <div>
-          <label>ID</label>
-          <input type="text" name="id" value={formData.id} onChange={handleChange} className="w-full border rounded p-2" required />
-        </div> */}
         <div>
           <label>Nombres</label>
           <input type="text" name="nombres" value={formData.nombres} onChange={handleChange} className="w-full border rounded p-2" required />
@@ -109,7 +91,7 @@ const PersonaRegistro = ({onRegitrar, onClose }) => {
 
         <div>
           <label>Fecha de Nacimiento</label>
-          <input type="date" name="fechaNacimiento" value={formData.fechaNacimiento} onChange={handleChange} className="w-full border rounded p-2" required />
+          <input type="date" name="fecha_nac" value={formData.fecha_nac} onChange={handleChange} className="w-full border rounded p-2" required />
         </div>
 
         <div>

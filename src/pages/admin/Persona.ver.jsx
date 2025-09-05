@@ -1,19 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import personasData from "../../services/personas";
-//const LOCAL_KEY = "personas";
+
 
 const PersonaVer = () => {
   const [personas, setPersonas] = useState([]);
+  const navigate = useNavigate();
   const { getData } = personasData();
 
-  const init = async () => {
-    const respuesta = await getData();
-    setPersonas(respuesta.data);
-  }
+  const fetchPersonas = async () => {
+    try {
+      const res = await getData();
+      setPersonas(res.data || []);
+    } catch (error) {
+      console.error("Error al obtener personas:", error);
+      setPersonas([]);
+    }
+  };
 
   useEffect(() => {
-    init();
+    fetchPersonas();
   }, []);
 
   const handleActualizar = (persona) => {
@@ -35,7 +41,7 @@ const PersonaVer = () => {
     const nuevaDireccion = prompt("Dirección:", persona.direccion);
     if (nuevaDireccion === null) return;
 
-    const nuevaFecha = prompt("Fecha de Nacimiento:", persona.fechaNacimiento);
+    const nuevaFecha = prompt("Fecha de Nacimiento:", persona.fecha_nac);
     if (nuevaFecha === null) return;
 
     const nuevaImg = prompt("URL de Imagen:", persona.img);
@@ -51,7 +57,7 @@ const PersonaVer = () => {
             email: nuevoEmail.trim(),
             telefono: nuevoTelefono.trim(),
             direccion: nuevaDireccion.trim(),
-            fechaNacimiento: nuevaFecha.trim(),
+            fecha_nac: nuevaFecha.trim(),
             img: nuevaImg.trim(),
           }
         : p
@@ -61,12 +67,15 @@ const PersonaVer = () => {
     localStorage.setItem(LOCAL_KEY, JSON.stringify(updated));
   };
 
-  // const handleEliminar = (id) => {
-  //   if (!window.confirm("¿Seguro que quieres eliminar esta persona?")) return;
-  //   const updated = personas.filter((p) => p.id !== id);
-  //   setPersonas(updated);
-  //   localStorage.setItem(LOCAL_KEY, JSON.stringify(updated));
-  // };
+  const handleBaja = async (id) => {
+    if (!window.confirm("¿Desea dar de baja esta persona?")) return;
+    try {
+      await bajaData(id);
+      fetchPersonas();
+    } catch (error) {
+      console.error("Error al dar de baja persona:", error);
+    }
+  };
 
   return (
     <div className="p-6 sm:p-2 lg:p-12 min-h-screen dark:bg-white">
@@ -95,7 +104,6 @@ const PersonaVer = () => {
               <th className="p-3 text-left">Dirección</th>
               <th className="p-3 text-left">Fecha Nac.</th>
               <th className="p-3 text-left">Imagen</th>
-              <th className="p-3 text-left">Estado</th>
               <th className="p-3 text-left">Acciones</th>
             </tr>
           </thead>
@@ -109,7 +117,7 @@ const PersonaVer = () => {
                 <td className="p-3">{p.email}</td>
                 <td className="p-3">{p.telefono}</td>
                 <td className="p-3">{p.direccion}</td>
-                <td className="p-3">{p.fechaNacimiento}</td>
+                <td className="p-3">{p.fecha_nac}</td>
                 <td className="p-3">
                   {p.img && (
                     <img
@@ -126,6 +134,12 @@ const PersonaVer = () => {
                   >
                     Actualizar
                   </button>
+                  <button
+                      onClick={() => handleBaja(p.id)}
+                      className="bg-red-500 text-white px-3 py-1 rounded"
+                    >
+                      Dar de baja
+                    </button>
 
                 </td>
               </tr>

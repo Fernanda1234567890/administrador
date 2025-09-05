@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react"; 
 import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
 import { tipoUn } from "../../data/tipoUn"; 
+import { postData } from "../../services/api"; 
 
-const TipoUnidadesRegistro = () => {
+const TipoUnidadesRegistro = ({ onRegistrar, onClose}) => {
   const [formData, setFormData] = useState({ 
     tipo: "", 
     descripcion: "",
@@ -11,46 +11,44 @@ const TipoUnidadesRegistro = () => {
 
   const navigate = useNavigate();
 
-  // Efecto para cargar datos de edición desde localStorage
-  useEffect(() => {
-    const editar = localStorage.getItem("tipo-unidades-editar");
-    if (editar) {
-      try {
-        const parsedData = JSON.parse(editar);
-        setFormData(parsedData);
-        localStorage.removeItem("tipo-unidades-editar");
-      } catch (error) {
-        console.error("Error al parsear datos de edición:", error);
-        localStorage.removeItem("tipo-unidades-editar"); // Limpia datos corruptos
-      }
-    }
-  }, []);
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const existing = JSON.parse(localStorage.getItem("tipo-unidades") || "[]"); // Valor por defecto como array vacío
-    
-      const index = existing.findIndex((c) => c.id === formData.id);
-      if (index >= 0) {
-        existing[index] = formData;
-      } else {
-        existing.push(formData);
-      }
 
-      localStorage.setItem("tipo-unidades", JSON.stringify(existing));
-      setFormData({ id: "", tipo: "", descripcion: "" }); // Limpia el formulario
-      alert("Tipo de Unidad registrado correctamente");
-      navigate("/tipo-unidades/ver"); // Redirección
-    } catch (error) {
-      console.error("Error al guardar los datos:", error);
-      alert("Ocurrió un error al registrar el tipo de unidad. Por favor, intenta de nuevo.");
-    }
-  };
+    
+    const nuevoTipoUnidad = {
+      tipo: formData.tipo,
+      descripcion: formData.descripcion,
+    };
+
+    try {
+        const response = await postData("http://localhost:3000/api/tipo-unidad", nuevoTipoUnidad);
+          alert("Tipo de unidad registrada con éxito");
+        // ✅ Limpiar formulario
+          setFormData({ tipo: "", descripcion: "" });
+    
+          // ✅ Llamar callback opcional para actualizar lista
+        if (onRegistrar) onRegistrar(response);
+    
+          // ✅ Cerrar modal si aplica
+         if (onClose) onClose();
+    
+          // ✅ Redirigir a la lista de organizaciones
+          navigate("/tipo-unidad/ver");
+        
+        } catch (error) {
+          alert("Error al registrar: " + error.message);
+          console.error(error);
+        }
+      };
+
 
   return (
     <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow-lg">
