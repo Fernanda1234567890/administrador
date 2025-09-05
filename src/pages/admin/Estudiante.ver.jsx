@@ -53,7 +53,7 @@ const EstudianteVer = () => {
         Estudiantes Registrados
       </h2>
       <button
-          onClick={() => navigate("/estudiantes/registro")}
+          onClick={() => navigate("/estudiantes/registrar")}
           className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
         >
           Registrar

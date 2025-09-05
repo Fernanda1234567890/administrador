@@ -2,7 +2,7 @@ import React from 'react';
 import { UserProvider } from './UserContext';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout';
-import Dashboard from './views/Dashboard';
+import Dashboard from './components/layout/Dashboard';
 import Register from './pages/admin/Register';
 import Users from './pages/admin/Users';
 import Units from './pages/admin/Units';

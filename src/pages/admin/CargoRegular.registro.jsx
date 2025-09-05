@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; 
+import { postData } from "../../services/api";
 
-const CargoRegularRegistro = () => {
+
+const CargoRegularRegistro = ({ onRegistrar, onClose }) => {
   const [formData, setFormData] = useState({
     nombre: "",
     descripcion: "",
@@ -9,6 +11,14 @@ const CargoRegularRegistro = () => {
   });
 
   const navigate = useNavigate();
+
+    const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   useEffect(() => {
     const editar = JSON.parse(localStorage.getItem("cargo-regular-editar"));
@@ -18,29 +28,38 @@ const CargoRegularRegistro = () => {
     }
   }, []);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
+ 
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const existing = JSON.parse(localStorage.getItem("cargo-regular")) || [];
+    const nuevoCargoRegular = {
+      nombre: formData.nombre,
+      descripcion: formData.descripcion,
+      nivelJerarquico: formData.nivelJerarquico,
+    };
 
-    const index = existing.findIndex((c) => c.id === formData.id);
-    if (index >= 0) {
-      existing[index] = formData;
-    } else {
-      existing.push(formData);
+  try {
+    const response = await postData("http://localhost:3000/api/cargo-regular", nuevoCargoRegular);
+    
+    alert("Cargo regular registrado con éxito");
+    // ✅ Limpiar formulario
+      setFormData({ tipo: "", descripcion: "", nivelJerarquico: "" });
+
+      // ✅ Llamar callback opcional para actualizar lista
+      if (onRegistrar) onRegistrar(response);
+
+      // ✅ Cerrar modal si aplica
+      if (onClose) onClose();
+
+      // ✅ Redirigir a la lista de organizaciones
+      navigate("/cargo-regular/ver");
+    
+    } catch (error) {
+      alert("Error al registrar: " + error.message);
+      console.error(error);
     }
-
-    localStorage.setItem("cargo-regular", JSON.stringify(existing));
-
-    alert("Cargo registrado correctamente ✅");
-
-    // Redirigir a la vista de ver
-    navigate("/cargo-regular/ver");
   };
+
 
   return (
     <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow-lg">

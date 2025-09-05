@@ -37,7 +37,7 @@ const CargoIntermedioVer = () => {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold text-gray-800">Cargos Intermedios</h2>
         <button
-          onClick={() => navigate("/cargo-intermedio/registro")}
+          onClick={() => navigate("/cargo-intermedio/registrar")}
           className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
         >
           Registrar

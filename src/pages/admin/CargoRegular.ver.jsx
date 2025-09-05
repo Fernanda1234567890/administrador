@@ -4,32 +4,59 @@ import cargosRegularesData from "../../services/cargosRegulares";
 
 const CargoRegularVer = () => {
   const [cargosRegulares, setCargosRegulares] = useState([]);
-  const { getData } = cargosRegularesData();
+  const navigate = useNavigate();
+  const { getData, createData, updateData, deleteData } = cargosRegularesData();
 
- const init = async () => {
-  const respuesta = await getData();
-  setCargosRegulares(respuesta.data);
- }
-  useEffect(() => {
-    init () ;
-  }, []);
+  // ✅ Función para traer cargoRanizaciones activas
+   const fetchCargosRegulares = async () => {
+     try {
+       const res = await getData(); // tu service ya hace fetch a backend
+       setCargosRegulares(res.data || []); // aseguramos que sea array
+     } catch (error) {
+       console.error("Error al obtener cargos regulares:", error);
+       setCargosRegulares([]);
+     }
+   };
+ 
+   // ✅ Se ejecuta al montar el componente
+   useEffect(() => {
+     fetchCargosRegulares();
+   }, []);
+   
 
 
-  const handleActualizar = async (cargo) => {
-    const nuevoNombre = prompt("Nuevo nombre:", cargo.nombre);
-    const nuevaDescripcion = prompt("Nueva descripción:", cargo.descripcion);
-    const nuevoNivel = prompt("Nuevo nivel jerárquico:", cargo.nivelJerarquico);
+  // ✅ Registrar nuevo cargo regular
+    const handleRegistrar = (newCargoR) => {
+    setCargosRegulares((prev) => [...prev, newCargoR]);
+  };
 
-    if (nuevoNombre && nuevaDescripcion && nuevoNivel) {
-      await updateData(cargo.id, {
-        ...cargo,
-        nombre: nuevoNombre,
-        descripcion: nuevaDescripcion,
-        nivelJerarquico: nuevoNivel,
-      });
-      init(); // vuelve a cargar la lista
+
+  // ✅ Actualizar cargoRanización
+  const handleActualizar = async (cargoR) => {
+    const nuevoNombre = prompt("Nuevo nombre:", cargoR.nombre);
+    const nuevaDescripcion = prompt("Nueva descripción:", cargoR.descripcion);
+
+    if (nuevoNombre && nuevaDescripcion) {
+      try {
+        await updateData(cargoR.id, {
+          ...cargoR,
+          nombre: nuevoNombre,
+          descripcion: nuevaDescripcion,
+        });
+        fetchCargosRegulares(); // refrescar lista
+      } catch (error) {
+        console.error("Error al actualizar cargo regular:", error);
+      }
     }
   };
+
+  // ✅ Dar de baja (soft delete)
+const handleDelete = (id) => {
+  if (!window.confirm("¿Seguro que desea dar de baja este cargo regular?")) return;
+
+  setCargosRegulares((prev) => prev.filter((cargoR) => cargoR.id !== id));
+};
+
 
   return (
     <div className="p-6 sm:p-2 lg:p-12 min-h-screen dark:bg-white">
@@ -38,7 +65,7 @@ const CargoRegularVer = () => {
           Cargos Regulares Registrados
         </h2>
         <button
-          onClick={() => navigate("/cargo-regular/registro")}
+          onClick={() => navigate("/cargo-regular/registrar")}
           className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
         >
           Registrar
@@ -57,8 +84,6 @@ const CargoRegularVer = () => {
                 <th className="p-3 text-left">Descripción</th>
                 <th className="p-3 text-left">Nivel Jerárquico</th>
                 <th className="p-3 text-left">Administrativos / Unidad</th>
-
-                <th className="p-3 text-left">Estado</th>
                 <th className="p-3 text-left">Acciones</th>
               </tr>
             </thead>
@@ -69,34 +94,20 @@ const CargoRegularVer = () => {
                   <td className="p-3" data-label="Nombre">{cargo.nombre}</td>
                   <td className="p-3" data-label="Descripción">{cargo.descripcion}</td>
                   <td className="p-3" data-label="Nivel Jerárquico">{cargo.nivelJerarquico}</td>
-                  {/* <td className="p-3">
-                    {cargo.administrativoCargoRegularUnidades?.length > 0 ? (
-                      cargo.administrativoCargoRegularUnidades.map((rel) => (
-                        <span key={rel.id} className="block">
-                          {rel.administrativo.nombres} ({rel.unidad.tipo})
-                        </span>
-                      ))
-                    ) : (
-                      <span className="text-gray-500">Sin administrativos</span>
-                    )}
-                  </td> */}
-                  {/* <td className="p-3" data-label="Estadon">
-                    {organizaciones.find((org) => org.id === cargo.organizacionId)?.tipo || "Activo o inactivo"}
-                  </td>
-                  <td className="p-3 flex gap-2" data-label="Acciones">
+                  <td className="p-3 flex gap-2">
                     <button
                       onClick={() => handleActualizar(cargo)}
                       className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
                     >
                       Actualizar
-                    </button> */}
-                    {/* <button
-                      onClick={() => handleEliminar(cargo.id)}
-                      className="bg-red-700 text-white px-2 py-1 rounded hover:bg-red-800"
+                    </button>
+                    <button
+                      onClick={() => handleDelete(cargo.id)}
+                      className="bg-red-500 text-white px-3 py-1 rounded"
                     >
-                      Eliminar
-                    </button> */}
-                  {/* </td> */}
+                      Dar de baja
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>

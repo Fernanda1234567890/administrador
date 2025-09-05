@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; 
+import { postData } from "../../services/api"; 
 
 const OrganizacionRegistro = ({ onRegistrar, onClose }) => {
   const [formData, setFormData] = useState({
@@ -21,38 +22,31 @@ const OrganizacionRegistro = ({ onRegistrar, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (window.confirm("¿Está seguro de registrar la organización?")) {
-      const newOrganizacion = {
-        tipo: formData.tipo,
-        descripcion: formData.descripcion,
-        estado: formData.estado,
-      };
+    const nuevaOrganizacion = {
+      tipo: formData.tipo,
+      descripcion: formData.descripcion,
+      estado: formData.estado === "true" ? true : false,
+    };
 
-      try {
-        const response = await fetch("http://localhost:3000/organizacion", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newOrganizacion),
-        });
+  try {
+    const response = await postData("http://localhost:3000/api/organizacion", nuevaOrganizacion);
+    // await postData("http://localhost:3000/api/organizacion", nuevaOrganizacion);
+    alert("Organización registrada con éxito");
+    // ✅ Limpiar formulario
+      setFormData({ tipo: "", descripcion: "", estado: "" });
 
-        const result = await response.json();
+      // ✅ Llamar callback opcional para actualizar lista
+      if (onRegistrar) onRegistrar(response);
 
-        if (result.success) {
-          setFormData({ tipo: "", descripcion: "", estado: "" });
+      // ✅ Cerrar modal si aplica
+      if (onClose) onClose();
 
-          if (onRegistrar) onRegistrar(result.data);
-          if (onClose) onClose();
-
-          navigate("/organizacion/ver");
-        } else {
-          alert("Error al registrar: " + result.message);
-        }
-      } catch (error) {
-        console.error("Error en la petición:", error);
-        alert("No se pudo registrar la organización");
-      }
+      // ✅ Redirigir a la lista de organizaciones
+      navigate("/organizacion/ver");
+    
+    } catch (error) {
+      alert("Error al registrar: " + error.message);
+      console.error(error);
     }
   };
 
@@ -103,13 +97,10 @@ const OrganizacionRegistro = ({ onRegistrar, onClose }) => {
               required
             >
               <option value="">Seleccione un estado</option>
-              <option value="activo">Activo</option>
-              <option value="inactivo">Inactivo</option>
+              <option value="true">Activo</option>
+              <option value="false">Inactivo</option>
             </select>
           </div>
-
-
-
         <button
           type="submit"
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800"
@@ -117,46 +108,9 @@ const OrganizacionRegistro = ({ onRegistrar, onClose }) => {
           Registrar
         </button>
       </form>
+
     </div>
   );
 };
 
 export default OrganizacionRegistro;
-
-
-// Como te mostré con fetch, no hace falta crear nada extra. Tu OrganizacionRegistro.jsx puede hacer directamente:
-// const response = await fetch("http://localhost:3000/organizacion", {
-//   method: "POST",
-//   headers: { "Content-Type": "application/json" },
-//   body: JSON.stringify(newOrganizacion),
-// });
-// o usando axios:
-
-// import axios from "axios";
-
-// const response = await axios.post("http://localhost:3000/organizacion", newO
-//   Crear un servicio central (recomendado)
-
-// Si quieres que todas las llamadas a tu backend estén organizadas, sí puedes crear una carpeta services o api y un archivo organizacionService.js o .ts:
-
-// import axios from "axios";
-
-// const URL = "http://localhost:3000/organizacion";
-
-// export const getOrganizaciones = () => axios.get(URL);
-// export const createOrganizacion = (data) => axios.post(URL, data);
-// export const updateOrganizacion = (id, data) => axios.patch(`${URL}/${id}`, data);
-// export const deleteOrganizacion = (id) => axios.delete(`${URL}/${id}`);
-
-
-// Luego en tu componente solo importas:
-
-// import { getOrganizaciones, createOrganizacion } from "../../services/organizacionService";
-
-
-// Esto centraliza todo y es más limpio que tener llamadas a fetch/axios repartidas por todos los componentes
-// Regla práctica:
-
-// Proyecto pequeño → fetch directo en el componente funciona.
-
-// Proyecto mediano/grande → crear services con axios es mejor.
