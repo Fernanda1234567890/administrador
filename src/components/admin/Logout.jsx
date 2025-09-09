@@ -1,26 +1,23 @@
-// src/components/admin/Logout.jsx
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../../contexts/UserContext";
 
 const Logout = () => {
   const navigate = useNavigate();
+  const { setUser } = useUser();
 
   const handleLogout = () => {
-    navigate('/login'); // O ajusta la ruta a donde quieras redirigir
+    localStorage.removeItem("token"); // borra token
+    setUser(null); // limpia contexto
+    navigate("/login"); // redirige al login
   };
 
   return (
-    <a
-      href="#"
-      onClick={(e) => {
-        e.preventDefault();
-        handleLogout();
-      }}
-      className="block px-4 py-2 hover:bg-blue-950 rounded transition-colors font-semibold"
-      role="menuitem"
+    <button
+      onClick={handleLogout}
+      className="w-full text-left px-4 py-2 hover:bg-blue-950 rounded transition-colors"
     >
-      Cerrar Sesión
-    </a>
+      Cerrar sesión
+    </button>
   );
 };
 

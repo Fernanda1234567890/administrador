@@ -1,65 +1,79 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import cargosRegularesData from "../../services/cargosRegulares";
+import axios from "axios";
+import CargoRegularRegistro from "./CargoRegular.registro"; 
+
+const API_URL = "http://localhost:3000/api/cargo-regular";
 
 const CargoRegularVer = () => {
-  const [cargosRegulares, setCargosRegulares] = useState([]);
+  const [cargos, setCargos] = useState([]);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(10);
+  const [search, setSearch] = useState("");
+  const [showInactive, setShowInactive] = useState(false);
+  const [total, setTotal] = useState(0);
+
+  const [editingCargo, setEditingCargo] = useState(null);
   const navigate = useNavigate();
-  const { getData, createData, updateData, deleteData } = cargosRegularesData();
 
-  // ✅ Función para traer cargoRanizaciones activas
-   const fetchCargosRegulares = async () => {
-     try {
-       const res = await getData(); // tu service ya hace fetch a backend
-       setCargosRegulares(res.data || []); // aseguramos que sea array
-     } catch (error) {
-       console.error("Error al obtener cargos regulares:", error);
-       setCargosRegulares([]);
-     }
-   };
- 
+
+  // Traer cargos desde backend
+  const fetchCargos = async () => {
+    try {
+      const estado = showInactive ? "inactivo" : "activo";
+      const res = await axios.get(API_URL, {
+        params: { page, limit, search, estado },
+      });
+      setCargos(res.data.data || []);
+      setTotal(res.data.meta?.total || 0);
+    } catch (error) {
+      console.error("Error al obtener cargos:", error);
+      setCargos([]);
+    }
+  };
+
    // ✅ Se ejecuta al montar el componente
-   useEffect(() => {
-     fetchCargosRegulares();
-   }, []);
-   
+  useEffect(() => {
+    fetchCargos();
+  }, [page, search, showInactive]);
 
+  // Abrir formulario para actualizar cargo
+  const handleEditar = (cargo) => {
+    setEditingCargo(cargo);
+  };
 
   // ✅ Registrar nuevo cargo regular
     const handleRegistrar = (newCargoR) => {
     setCargosRegulares((prev) => [...prev, newCargoR]);
   };
 
+ // Actualizar cargo en la lista después de editar
+  const handleActualizar = (updatedCargo) => {
+    setCargos((prev) =>
+      prev.map((c) => (c.id === updatedCargo.id ? updatedCargo : c))
+    );
+    setEditingCargo(null); // cerrar formulario
+  };
 
-  // ✅ Actualizar cargoRanización
-  const handleActualizar = async (cargoR) => {
-    const nuevoNombre = prompt("Nuevo nombre:", cargoR.nombre);
-    const nuevaDescripcion = prompt("Nueva descripción:", cargoR.descripcion);
+  // Dar de baja (soft delete)
+  const handleBaja = async (id) => {
+    if (!window.confirm("¿Seguro que desea dar de baja este cargo?")) return;
 
-    if (nuevoNombre && nuevaDescripcion) {
-      try {
-        await updateData(cargoR.id, {
-          ...cargoR,
-          nombre: nuevoNombre,
-          descripcion: nuevaDescripcion,
-        });
-        fetchCargosRegulares(); // refrescar lista
-      } catch (error) {
-        console.error("Error al actualizar cargo regular:", error);
-      }
+    try {
+      await axios.delete(`${API_URL}/${id}`);
+      fetchCargos();
+      alert("Cargo dado de baja correctamente");
+    } catch (error) {
+      console.error("Error al dar de baja:", error);
+      alert(
+        "No se pudo dar de baja: " +
+          (error.response?.data?.message || error.message)
+      );
     }
   };
 
-  // ✅ Dar de baja (soft delete)
-const handleDelete = (id) => {
-  if (!window.confirm("¿Seguro que desea dar de baja este cargo regular?")) return;
-
-  setCargosRegulares((prev) => prev.filter((cargoR) => cargoR.id !== id));
-};
-
-
-  return (
-    <div className="p-6 sm:p-2 lg:p-12 min-h-screen dark:bg-white">
+ return (
+    <div className="p-6 sm:p-2 lg:p-12 min-h-screen bg-white">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold text-gray-800 text-left">
           Cargos Regulares Registrados
@@ -72,41 +86,85 @@ const handleDelete = (id) => {
         </button>
       </div>
 
+      {/* Filtros */}
+      <div className="mb-4 flex gap-2">
+        <button
+          onClick={() => setShowInactive(false)}
+          className={`px-4 py-2 rounded ${
+            !showInactive ? "bg-red-700 text-white" : "bg-gray-300"
+          }`}
+        >
+          Activos
+        </button>
+        <button
+          onClick={() => setShowInactive(true)}
+          className={`px-4 py-2 rounded ${
+            showInactive ? "bg-gray-700 text-white" : "bg-gray-300"
+          }`}
+        >
+          Inactivos
+        </button>
+      </div>
+
+      {/* Búsqueda */}
+      <div className="mb-4 flex gap-2">
+        <input
+          type="text"
+          placeholder="Buscar por nombre..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="border p-2 rounded w-full"
+        />
+        <button
+          onClick={fetchCargos}
+          className="bg-blue-600 text-white px-3 py-1 rounded"
+        >
+          Buscar
+        </button>
+      </div>
+
       <div className="max-w-3xl mx-auto">
-        {cargosRegulares.length === 0 ? (
+        {cargos.length === 0 ? (
           <p className="text-gray-600">No hay Cargos Regulares registrados.</p>
         ) : (
           <table className="w-full border-collapse bg-white shadow-lg rounded-lg">
             <thead>
-              <tr className="bg-blue-950 text-white">
+              <tr className="bg-red-700 text-white">
                 <th className="p-3 text-left">ID</th>
                 <th className="p-3 text-left">Nombre</th>
                 <th className="p-3 text-left">Descripción</th>
                 <th className="p-3 text-left">Nivel Jerárquico</th>
-                <th className="p-3 text-left">Administrativos / Unidad</th>
                 <th className="p-3 text-left">Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {cargosRegulares.map((cargo) => (
-                <tr key={cargo.id} className="border-b hover:bg-gray-100 transition">
-                  <td className="p-3" data-label="ID">{cargo.id}</td>
-                  <td className="p-3" data-label="Nombre">{cargo.nombre}</td>
-                  <td className="p-3" data-label="Descripción">{cargo.descripcion}</td>
-                  <td className="p-3" data-label="Nivel Jerárquico">{cargo.nivelJerarquico}</td>
+              {cargos.map((cargo) => (
+                <tr key={cargo.id} className="border-b hover:bg-gray-100">
+                  <td className="p-3">{cargo.id}</td>
+                  <td className="p-3">{cargo.nombre}</td>
+                  <td className="p-3">{cargo.descripcion}</td>
+                  <td className="p-3">
+                    {cargo.nivel_jerarquico === 1
+                      ? "Alto"
+                      : cargo.nivel_jerarquico === 2
+                      ? "Medio"
+                      : "Bajo"}
+                  </td>
                   <td className="p-3 flex gap-2">
                     <button
-                      onClick={() => handleActualizar(cargo)}
+                      onClick={() => handleEditar(cargo)}
                       className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
                     >
                       Actualizar
                     </button>
-                    <button
-                      onClick={() => handleDelete(cargo.id)}
-                      className="bg-red-500 text-white px-3 py-1 rounded"
-                    >
-                      Dar de baja
-                    </button>
+                    {!showInactive && (
+                      <button
+                        onClick={() => handleBaja(cargo.id)}
+                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                      >
+                        Dar de baja
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -114,6 +172,34 @@ const handleDelete = (id) => {
           </table>
         )}
       </div>
+
+      {/* Paginación */}
+      <div className="flex justify-center mt-4 gap-2">
+        <button
+          disabled={page <= 1}
+          onClick={() => setPage(page - 1)}
+          className="bg-gray-300 px-3 py-1 rounded disabled:opacity-50"
+        >
+          Anterior
+        </button>
+        <span className="px-3 py-1">{page}</span>
+        <button
+          disabled={page >= Math.ceil(total / limit)}
+          onClick={() => setPage(page + 1)}
+          className="bg-gray-300 px-3 py-1 rounded disabled:opacity-50"
+        >
+          Siguiente
+        </button>
+      </div>
+
+      {/* Modal/Formulario de edición */}
+      {editingCargo && (
+        <CargoRegularRegistro
+          cargo={editingCargo}
+          onClose={() => setEditingCargo(null)}
+          onRegistrar={handleActualizar}
+        />
+      )}
     </div>
   );
 };

@@ -1,4 +1,3 @@
-// src/services/organizacion.js
 import axios from "axios";
 import React from "react";
 
@@ -6,10 +5,10 @@ const API_URL = "http://localhost:3000/api/organizacion";
 
 const organizacionData = () => {
   // ✅ Obtener con paginación, búsqueda y filtro de estado
-  const getData = async (page = 1, limit = 10, search = "", estado = "true") => {
+  const getData = async (page = 1, limit = 10, search = "", estado = "") => {
     try {
       const respuesta = await axios.get(API_URL, {
-        params: { page, limit, search, estado },
+        params: { page, limit, search, estado},
       });
       return respuesta.data; // devolvemos solo data procesada
     } catch (error) {
@@ -52,15 +51,15 @@ const organizacionData = () => {
   };
 
   // ✅ Restaurar
-  const restoreData = async (id) => {
-    try {
-      const respuesta = await axios.patch(`${API_URL}/${id}`, { estado: true });
-      return respuesta.data;
-    } catch (error) {
-      console.error("Error al restaurar organización:", error);
-      throw error;
-    }
-  };
+    const restoreData = async (id) => {
+      try {
+        const respuesta = await axios.patch(`${API_URL}/${id}/restaurar`);
+        return respuesta.data;
+      } catch (error) {
+        console.error("Error al restaurar organización:", error);
+        throw error;
+      }
+    };
 
   return {
     getData,

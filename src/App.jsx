@@ -1,5 +1,4 @@
 import React from 'react';
-import { UserProvider } from './UserContext';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from './components/layout/MainLayout';
 import Dashboard from './components/layout/Dashboard';
@@ -26,12 +25,16 @@ import UnidadRegistro from './pages/admin/Unidad.Registro';
 import UnidadVer from './pages/admin/Unidad.ver';
 import CargoIntermedioRegistro from './pages/admin/CargoIntermedio.Registro';
 import CargoIntermedioVer from './pages/admin/CargoIntermedio.ver';
+import Activities from "./pages/user/Activities";
+import Settings from "./pages/user/Settings";
+import ChangePassword from "./pages/user/ChangePassword";
 
 
+import { UserProvider } from "./contexts/UserContext";
 
 function App() {
   return (
-    
+  <UserProvider> 
     <Router>
       <Routes>
         <Route path="/" element={<MainLayout />}>
@@ -60,8 +63,13 @@ function App() {
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/cerrar-sesion" element={<Navigate to="/login" />} />
+        <Route path="/activities" element={<Activities />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/change-password" element={<ChangePassword />} />
+
       </Routes>
     </Router>
+  </UserProvider> 
   );
 }
 

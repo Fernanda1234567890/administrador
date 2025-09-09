@@ -1,16 +1,37 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios"; // 👈 Usamos axios
 
 const CargoRegularRegistro = ({ onRegistrar, onClose }) => {
+  const { id } = useParams(); // obtenemos el id de la URL
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    id: null, // 👈 para editar
     nombre: "",
     descripcion: "",
     nivel_jerarquico: "",
   });
+  
 
-  const navigate = useNavigate();
+    // Si hay datos para edición, los cargamos
+  useEffect(() => {
+    if (id) {
+      // ⚡ Petición al backend para cargar datos del cargo
+      axios.get(`http://localhost:3000/api/cargo-regular/${id}`)
+        .then(res => {
+          const cargo = res.data.data || res.data; // según tu respuesta del backend
+          setFormData({
+            nombre: cargo.nombre,
+            descripcion: cargo.descripcion,
+            nivel_jerarquico: cargo.nivel_jerarquico?.toString() || "",
+          });
+        })
+        .catch(err => {
+          console.error("Error al cargar cargo:", err);
+          alert("No se pudo cargar el cargo");
+        });
+    }
+  }, [id]);
 
   // Manejo de cambios en inputs
   const handleChange = (e) => {
@@ -20,15 +41,6 @@ const CargoRegularRegistro = ({ onRegistrar, onClose }) => {
       [name]: value,
     }));
   };
-
-  // Si hay datos para edición, los cargamos
-  useEffect(() => {
-    const editar = JSON.parse(localStorage.getItem("cargo-regular-editar"));
-    if (editar) {
-      setFormData(editar);
-      localStorage.removeItem("cargo-regular-editar");
-    }
-  }, []);
 
   // Enviar datos
   const handleSubmit = async (e) => {
@@ -44,32 +56,30 @@ const CargoRegularRegistro = ({ onRegistrar, onClose }) => {
 
     try {
       let response;
-      if (formData.id) {
-        // ✅ EDITAR
-        response = await axios.patch(
-          `http://localhost:3000/api/cargo-regular/${formData.id}`,
-          payload
-        );
-        alert("Cargo regular actualizado con éxito");
-      } else {
-        // ✅ CREAR
-        response = await axios.post(
-          "http://localhost:3000/api/cargo-regular",
-          payload
-        );
-        alert("Cargo regular registrado con éxito");
-      }
+        if (id) {
+          // Editar
+          response = await axios.patch(
+            `http://localhost:3000/api/cargo-regular/${id}`,
+            payload
+          );
+          alert("Cargo regular actualizado con éxito");
+        } else {
+          // Crear
+          response = await axios.post(
+            "http://localhost:3000/api/cargo-regular",
+            payload
+          );
+          alert("Cargo regular registrado con éxito");
+          setFormData({ nombre: "", descripcion: "", nivel_jerarquico: "" });
+        }
 
-      // ✅ Limpiar formulario
-      setFormData({ id: null, nombre: "", descripcion: "", nivel_jerarquico: "" });
-
-      // ✅ Callback opcional
+      // Callback opcional
       if (onRegistrar) onRegistrar(response.data);
 
-      // ✅ Cerrar modal
+      // Cerrar modal si aplica
       if (onClose) onClose();
 
-      // ✅ Redirigir a la lista
+      // Redirigir a lista
       navigate("/cargo-regular/ver");
     } catch (error) {
       alert(
@@ -83,7 +93,7 @@ const CargoRegularRegistro = ({ onRegistrar, onClose }) => {
   return (
     <div className="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-4">
-        {formData.id ? "Editar Cargo Regular" : "Registrar Cargo Regular"}
+       {id ? "Editar Cargo Regular" : "Registrar Cargo Regular"}
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Nombre */}
@@ -123,9 +133,10 @@ const CargoRegularRegistro = ({ onRegistrar, onClose }) => {
             required
           >
             <option value="">Seleccione un nivel</option>
-            <option value="1">Alto</option>
-            <option value="2">Medio</option>
-            <option value="3">Bajo</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
           </select>
         </div>
 

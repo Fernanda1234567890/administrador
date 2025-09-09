@@ -25,7 +25,7 @@ const OrganizacionRegistro = ({ onRegistrar, onClose }) => {
     const nuevaOrganizacion = {
       tipo: formData.tipo,
       descripcion: formData.descripcion,
-      estado: formData.estado === "true" ? true : false,
+      estado: true ,
     };
 
   try {
@@ -33,7 +33,7 @@ const OrganizacionRegistro = ({ onRegistrar, onClose }) => {
     // await postData("http://localhost:3000/api/organizacion", nuevaOrganizacion);
     alert("Organización registrada con éxito");
     // ✅ Limpiar formulario
-      setFormData({ tipo: "", descripcion: "", estado: "" });
+      setFormData({ tipo: "", descripcion: "" });
 
       // ✅ Llamar callback opcional para actualizar lista
       if (onRegistrar) onRegistrar(response);
@@ -82,24 +82,6 @@ const OrganizacionRegistro = ({ onRegistrar, onClose }) => {
               className="w-full border border-gray-300 rounded-md p-2"
               required
             />
-          </div>
-
-          <div>
-            <label htmlFor="estado" className="block text-sm font-medium mb-1">
-              Estado
-            </label>
-            <select
-              id="estado"
-              name="estado"
-              value={formData.estado}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md p-2"
-              required
-            >
-              <option value="">Seleccione un estado</option>
-              <option value="true">Activo</option>
-              <option value="false">Inactivo</option>
-            </select>
           </div>
         <button
           type="submit"

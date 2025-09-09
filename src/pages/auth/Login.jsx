@@ -1,33 +1,79 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from "../../contexts/UserContext";
+
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const { setUser } = useUser();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  // Validación básica
     if (!email || !password) {
-      setError('Por favor, completa todos los campos');
+      setError("Por favor completa todos los campos");
       return;
     }
-    try {
-      const response = await fetch('http://localhost:3000/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      if (response.ok) {
-        console.log('Login exitoso');
-        localStorage.setItem('token', 'fake-token'); // Ejemplo
-        navigate('/dashboard');
+
+//   try {
+//     const response = await fetch('http://localhost:3000/api/auth/login', {
+//       method: 'POST',
+//       headers: { 'Content-Type': 'application/json' },
+//     //   body: JSON.stringify({ email: 'admin@uatf.bo', password:'123456' }),
+//     // });
+//      body: JSON.stringify({ email, password }), // tomamos los valores reales del formulario
+//       });
+
+//     const data = await response.json(); // obtenemos la respuesta del backend
+
+//  if (response.ok) {
+//         console.log('Login exitoso', data);
+
+//         // Guardamos el token
+//         localStorage.setItem('token', data.access_token);
+
+//         // ✅ Actualizamos el contexto con los datos reales del usuario
+//         setUser({
+//           name: data.user?.name || "Administrador", // nombre real del backend o "Administrador" por defecto
+//           email: data.user?.email || email,
+//           avatar: data.user?.avatar || "" // si no hay avatar, dejamos vacío
+//         });
+
+//         // Redirigimos al dashboard
+//         navigate('/');
+//       } else {
+//         setError(data.message || 'Credenciales incorrectas');
+//       }
+//     } catch (err) {
+//       console.error(err);
+//       setError('Error al conectar con el servidor');
+//     }
+//   };
+
+   try {
+      // Simulación de backend
+      // Reemplaza esto con tu fetch real
+      const fakeBackendResponse = {
+        ok: email === "admin@uatf.bo" && password === "123456",
+        user: { name: "Administrador", email: "admin@uatf.bo", avatar: "" },
+        access_token: "123456abcdef"
+      };
+
+      if (fakeBackendResponse.ok) {
+        localStorage.setItem("token", fakeBackendResponse.access_token);
+        setUser(fakeBackendResponse.user); // Actualizamos contexto
+        navigate("/"); // redirige al dashboard
       } else {
-        setError('Credenciales incorrectas');
+        setError("Credenciales incorrectas");
       }
     } catch (err) {
-      setError('Error al conectar con el servidor');
+      console.error(err);
+      setError("Error al conectar con el servidor");
     }
   };
 
@@ -97,7 +143,7 @@ const Login = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between text-sm">
+           <div className="flex items-center justify-between text-sm">
             <label className="flex items-center gap-2">
               <input type="checkbox" className="form-checkbox text-indigo-500" />
               Remember me

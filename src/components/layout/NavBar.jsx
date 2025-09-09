@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import Logout from "../admin/Logout";
-//import UserName from "../admin/UserName"; // Ajusta la ruta si es necesario
+import { useUser } from "../../contexts/UserContext";
+import { UserAvatar } from "./UserAvatar";
+import { Link } from "react-router-dom";
 
 
 const NavBar = () => {
@@ -8,7 +10,8 @@ const NavBar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  
+  const { user } = useUser(); // 👈 Datos globales del usuario
+
   // Cerrar dropdown al hacer clic fuera
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -106,56 +109,40 @@ return (
             </div>
           </div>
 
-          {/* Menú usuario */}
+           {/* Menú usuario */}
           <div className="flex items-center relative" ref={dropdownRef}>
             <button
               type="button"
-              className="flex text-sm bg-blue-800 rounded-full focus:outline-none focus:ring-2 focus:ring-white"
+              className="flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-white"
               onClick={toggleDropdown}
             >
               <span className="sr-only">Abrir menú de usuario</span>
-              <img
-                className="w-8 h-8 rounded-full"
-                src="https://miro.medium.com/v2/resize:fit:1286/0*hINaDB9904rHMVNL"
-                alt="user photo"
-              />
+              {/* Avatar del usuario */}
+              <UserAvatar user={user} size={32} />
             </button>
+
+            {/* Aquí es donde va tu bloque */}
             {isDropdownOpen && (
-              <div
-                className="absolute right-0 mt-2 w-60 bg-red-900 rounded-xl shadow-lg z-50 text-white text-sm"
-                role="menu"
-              >
+              <div className="absolute right-0 mt-2 w-60 bg-red-900 rounded-xl shadow-lg z-50 text-white text-sm">
                 <div className="px-4 py-2 border-b border-blue-950">
-                  <p className="font-semibold">Victor</p>
-                  <p className="text-xs truncate">neil.sims@flowbite.com</p>
+                  <p className="font-semibold">{user?.name || "Usuario"}</p>
+                  <p className="text-xs truncate">{user?.email || "correo@ejemplo.com"}</p>
                 </div>
                 <ul className="py-2 space-y-1">
                   <li>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 hover:bg-blue-950 rounded transition-colors"
-                      role="menuitem"
-                    >
+                    <Link to="/activities" className="block px-4 py-2 hover:bg-blue-950 rounded transition-colors">
                       Mis Actividades
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 hover:bg-blue-950 rounded transition-colors"
-                      role="menuitem"
-                    >
+                    <Link to="/settings" className="block px-4 py-2 hover:bg-blue-950 rounded transition-colors">
                       Ajustes
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 hover:bg-blue-950 rounded transition-colors"
-                      role="menuitem"
-                    >
+                    <Link to="/change-password" className="block px-4 py-2 hover:bg-blue-950 rounded transition-colors">
                       Cambiar contraseña
-                    </a>
+                    </Link>
                   </li>
                   <li>
                     <Logout />
@@ -164,6 +151,7 @@ return (
               </div>
             )}
           </div>
+
         </div>
       </div>
     </nav>

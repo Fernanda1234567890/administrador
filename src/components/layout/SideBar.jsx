@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react"; // Ícono hamburguesa y cerrar
 import { FaChevronRight } from "react-icons/fa"; // Ícono para submenús
 import FRONTIS from "../../assets/FRONTIS.png";
+import { useUser } from "../../contexts/UserContext"
+
 
 const SideBar = () => {
   const [openMenu, setOpenMenu] = useState(null); // Estado para manejar submenús
   const [isOpen, setIsOpen] = useState(false); // Estado para el sidebar en pantallas pequeñas
   const [isCompact, setIsCompact] = useState(false); // Estado para el modo comprimido
-
+  const { user } = useUser();
   // Función para abrir/cerrar submenús
   const toggleMenu = (menuKey) => {
     setOpenMenu(openMenu === menuKey ? null : menuKey);
@@ -57,19 +59,28 @@ const SideBar = () => {
           <X size={24} />
         </button>
 
-        {/* Sección del Usuario */}
-        <div className="flex items-center mb-6 p-2 bg-gray-800 rounded-lg">
-          <img
-            className="w-12 h-12 rounded-full mr-3"
-            src="https://miro.medium.com/v2/resize:fit:1286/0*hINaDB9904rHMVNL"
-            alt="User profile"
-          />
-          <div>
-            <Link to="/my-account" className="text-sm text-gray-300 hover:text-white">
-              Mi cuenta
-            </Link>
-          </div>
+      {/* Sección del Usuario */}
+      <div className="flex items-center mb-6 p-2 bg-gray-800 rounded-lg">
+        <img
+          className="w-12 h-12 rounded-full mr-3"
+          src={
+            user?.avatar ||
+            `https://ui-avatars.com/api/?name=${encodeURIComponent(
+              user?.name || ""
+            )}`
+          }
+          alt="User profile"
+        />
+        <div>
+          <Link
+            to="/my-account"
+            className="text-sm text-gray-300 hover:text-white"
+          >
+            {user?.name || ""} {/* ya no aparece "Invitado" */}
+          </Link>
         </div>
+      </div>
+
 
         {/* Enlaces de navegación con secciones */}
         <ul className="space-y-4 font-medium">
