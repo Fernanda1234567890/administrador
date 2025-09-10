@@ -1,14 +1,19 @@
-// DocenteVer.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import estudiantesData from "../../services/estudiantes";
+//import estudiantesData from "../../services/estudiantes";
 import personasData from "../../services/personas";
+import docentesData from "../../services/docentes";
+
 
 const DocenteVer = () => {
   const [docentes, setDocentes] = useState([]);
+  const [total, setTotal] = useState(0);
   const [personas, setPersonas] = useState([]);
-  const { getData } = estudiantesData();
-  const { getPerson } = personasData();
+  const [page, setPage] = useState(1);
+  const limit = 5;
+  const { getData, remove, restore, update } = docentesData();
+
+  const navigate = useNavigate();
 
   const init = async () => {
     const respuesta = await getData()

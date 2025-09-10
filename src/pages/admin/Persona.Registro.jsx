@@ -1,9 +1,13 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams  } from "react-router-dom";
 import { postData } from "../../services/api"; 
+import personasData from "../../services/personas";
 
 
 const PersonaRegistro = ({onRegistrar, onClose }) => {
+  const { id } = useParams(); // Para edición
+  const navigate = useNavigate();
+  const { createData, updateData, getData } = personasData();
   
   const [formData, setFormData] = useState({
     nombres: "",
@@ -16,7 +20,17 @@ const PersonaRegistro = ({onRegistrar, onClose }) => {
     img: ""
   });
 
-  const navigate = useNavigate();
+  // ✅ Si hay ID, cargamos datos de la persona
+  useEffect(() => {
+    if (id) {
+      getData(1, 1, "", "", "").then(res => {
+        const persona = res.data.find(p => p.id === +id);
+        if (persona) setFormData(persona);
+      }).catch(err => console.error(err));
+    }
+  }, [id]);
+
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;

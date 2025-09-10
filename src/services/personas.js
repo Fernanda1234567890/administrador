@@ -41,20 +41,37 @@ const personasData = () => {
 
   // ✅ Dar de baja (soft-delete)
   const bajaData = async (id) => {
-    try {
-      const res = await axios.delete(`${API_URL}/${id}`);
-      return res.data;
+      if (!window.confirm("¿Seguro que desea dar de baja esta organización?")) return;
+
+      try {
+      const respuesta = await axios.delete(`${API_URL}/${id}`);
+      return respuesta.data;
     } catch (error) {
-      console.error("Error al dar de baja persona:", error);
+      console.error("Error al dar de baja organización:", error);
       throw error;
     }
   };
+
+  // ✅ Eliminar definitivamente (hard delete)
+  const deleteData = async (id) => {
+    if (!window.confirm("⚠️ Esta acción es irreversible. ¿Seguro que desea eliminar esta persona?")) return;
+
+    try {
+      const respuesta = await axios.delete(`${API_URL}/${id}`);
+      return respuesta.data;
+    } catch (error) {
+      console.error("Error al eliminar persona:", error);
+      throw error;
+    }
+  };
+  
 
   return {
     getData,
     createData,
     updateData,
     bajaData,
+    deleteData,
   };
 };
 

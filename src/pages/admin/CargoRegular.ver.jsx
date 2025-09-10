@@ -91,18 +91,23 @@ const CargoRegularVer = () => {
         <button
           onClick={() => setShowInactive(false)}
           className={`px-4 py-2 rounded ${
-            !showInactive ? "bg-red-700 text-white" : "bg-gray-300"
+            !showInactive ? "bg-blue-950 text-white" : "bg-gray-300"
           }`}
         >
           Activos
         </button>
         <button
-          onClick={() => setShowInactive(true)}
-          className={`px-4 py-2 rounded ${
-            showInactive ? "bg-gray-700 text-white" : "bg-gray-300"
-          }`}
+          onClick={() => {
+            const clave = prompt("Ingrese la clave para ver inactivos:");
+            if (clave === "SISTEM4S") {
+              setShowInactive(true);
+            } else {
+              alert("Clave incorrecta");
+            }
+          }}
+          className={`px-4 py-2 rounded ${showInactive ? "bg-red-600 text-white" : "bg-gray-300"}`}
         >
-          Inactivos
+          Inactivas
         </button>
       </div>
 
@@ -113,11 +118,11 @@ const CargoRegularVer = () => {
           placeholder="Buscar por nombre..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="border p-2 rounded w-full"
+          className="border p-2 rounded " //w-full
         />
         <button
           onClick={fetchCargos}
-          className="bg-blue-600 text-white px-3 py-1 rounded"
+          className="bg-blue-700 text-white px-3 py-1 rounded"
         >
           Buscar
         </button>
@@ -129,7 +134,7 @@ const CargoRegularVer = () => {
         ) : (
           <table className="w-full border-collapse bg-white shadow-lg rounded-lg">
             <thead>
-              <tr className="bg-red-700 text-white">
+              <tr className="bg-blue-950 text-white">
                 <th className="p-3 text-left">ID</th>
                 <th className="p-3 text-left">Nombre</th>
                 <th className="p-3 text-left">Descripción</th>

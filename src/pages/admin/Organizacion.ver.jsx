@@ -80,7 +80,7 @@ const OrganizacionVer = () => {
       <div className="mb-4 flex gap-2">
         <button
           onClick={() => setShowInactive(false)}
-          className={`px-4 py-2 rounded ${!showInactive ? "bg-blue-600 text-white" : "bg-gray-300"}`}
+          className={`px-4 py-2 rounded ${!showInactive ? "bg-blue-950 text-white" : "bg-gray-300"}`}
         >
           Activas
         </button>
@@ -109,7 +109,7 @@ const OrganizacionVer = () => {
         />
         <button
           onClick={() => fetchOrganizaciones()}
-          className="bg-blue-600 text-white px-3 py-1 rounded"
+          className="bg-blue-700 text-white px-3 py-1 rounded"
         >
           Buscar
         </button>
