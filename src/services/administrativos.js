@@ -1,75 +1,33 @@
-import axios from 'axios'
-import React from 'react'
+import axios from "axios";
 
-const administrativosData = () => {
-    const getData = async () => {
-        try {
-            const respuesta = await axios.get('http://localhost:3000/api/administrativo')
-            return respuesta
-        }
-        catch(error) {
-            console.log(error)
-        }
-    }
-    return{
-        getData
-    }
-}
-export default administrativosData
+const API_URL = "http://localhost:3000/api/administrativo";
 
-// ../../services/administrativos.js
-// import axios from "axios";
+export const getAdministrativos = async (page = 1, limit = 10, filters = {}) => {
+  try {
+    const res = await axios.get(API_URL, { params: { page, limit, ...filters } });
+    return res.data;
+  } catch (error) {
+    console.error("Error al obtener administrativos:", error);
+    throw error;
+  }
+};
 
-// const API_URL = "http://localhost:3000/api/administrativo";
+export const createAdministrativo = async (data) => {
+  const res = await axios.post(API_URL, data);
+  return res.data;
+};
 
-// const administrativosData = () => {
-//   // Obtener todos
-//   const getData = async () => {
-//     try {
-//       const respuesta = await axios.get(API_URL);
-//       return respuesta;
-//     } catch (error) {
-//       console.error("Error al obtener administrativos:", error);
-//       return { data: [] }; 
-//     }
-//   };
+export const updateAdministrativo = async (id, data) => {
+  const res = await axios.patch(`${API_URL}/${id}`, data);
+  return res.data;
+};
 
-//   // Crear uno nuevo
-//   const createData = async (nuevo) => {
-//     try {
-//       const respuesta = await axios.post(API_URL, nuevo);
-//       return respuesta;
-//     } catch (error) {
-//       console.error("Error al crear administrativo:", error);
-//     }
-//   };
+export const deleteAdministrativo = async (id) => {
+  const res = await axios.delete(`${API_URL}/${id}`);
+  return res.data;
+};
 
-//   // Actualizar
-//   const updateData = async (id, updated) => {
-//     try {
-//       const respuesta = await axios.put(`${API_URL}/${id}`, updated);
-//       return respuesta;
-//     } catch (error) {
-//       console.error("Error al actualizar administrativo:", error);
-//     }
-//   };
-
-//   // Eliminar
-//   const deleteData = async (id) => {
-//     try {
-//       const respuesta = await axios.delete(`${API_URL}/${id}`);
-//       return respuesta;
-//     } catch (error) {
-//       console.error("Error al eliminar administrativo:", error);
-//     }
-//   };
-
-//   return {
-//     getData,
-//     createData,
-//     updateData,
-//     deleteData,
-//   };
-// };
-
-// export default administrativosData;
+export const restoreAdministrativo = async (id) => {
+  const res = await axios.patch(`${API_URL}/${id}/restore`);
+  return res.data;
+};

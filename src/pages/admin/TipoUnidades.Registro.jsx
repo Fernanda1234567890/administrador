@@ -7,6 +7,7 @@ const TipoUnidadesRegistro = ({ onRegistrar, onClose}) => {
   const [formData, setFormData] = useState({ 
     tipo: "", 
     descripcion: "",
+    estado:"true",
   });
 
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ const TipoUnidadesRegistro = ({ onRegistrar, onClose}) => {
     const nuevoTipoUnidad = {
       tipo: formData.tipo,
       descripcion: formData.descripcion,
+      estado: true ,
     };
 
     try {
@@ -68,6 +70,7 @@ const TipoUnidadesRegistro = ({ onRegistrar, onClose}) => {
             </option>
           ))}
         </select>
+
         <input 
           type="text" 
           name="descripcion" 

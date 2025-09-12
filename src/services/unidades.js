@@ -1,67 +1,68 @@
-import axios from 'axios'
-import React from 'react'
+import axios from "axios";
+
+const API_URL = "http://localhost:3000/api/unidad"; // Cambia si tu backend tiene otra URL
 
 const unidadesData = () => {
-  const getData = async ()=>{
+
+  const getData = async (page = 1, limit = 10, nombre = "", responsable = "", id_tipo_unidad = "", estado = "activo") => {
     try {
-      const respuesta = await axios.get('http://localhost:3000/api/unidad')
-      return respuesta 
+      const res = await axios.get(API_URL, {
+        params: { page, limit, nombre, responsable, id_tipo_unidad, estado },
+      });
+      return res.data;
     } catch (error) {
-      console.log(error)
+      console.error("Error al obtener unidades:", error);
+      throw error;
     }
-  } 
+  };
+
+  const createData = async (unidad) => {
+    try {
+      const res = await axios.post(API_URL, unidad);
+      return res.data;
+    } catch (error) {
+      console.error("Error al crear unidad:", error);
+      throw error;
+    }
+  };
+
+  const updateData = async (id, unidad) => {
+    try {
+      const res = await axios.patch(`${API_URL}/${id}`, unidad);
+      return res.data;
+    } catch (error) {
+      console.error("Error al actualizar unidad:", error);
+      throw error;
+    }
+  };
+
+  const bajaData = async (id) => {
+    try {
+      const res = await axios.delete(`${API_URL}/${id}`);
+      return res.data;
+    } catch (error) {
+      console.error("Error al dar de baja unidad:", error);
+      throw error;
+    }
+  };
+
+  const restoreData = async (id) => {
+    try {
+      const res = await axios.patch(`${API_URL}/restore/${id}`);
+      return res.data;
+    } catch (error) {
+      console.error("Error al restaurar unidad:", error);
+      throw error;
+    }
+  };
 
   return {
-    getData
-  }
-}
+    getData,
+    createData,
+    updateData,
+    bajaData,
+    restoreData,
+  };
+};
 
-export default unidadesData
-
-// ../../services/unidades.js
-// import axios from "axios";
-
-// const API_URL = "http://localhost:3000/api/unidades";
-
-// const unidadesData = () => {
-//   const getData = async () => {
-//     try {
-//       const respuesta = await axios.get(API_URL);
-//       return respuesta;
-//     } catch (error) {
-//       console.error("Error al obtener unidades:", error);
-//       return { data: [] };
-//     }
-//   };
-
-//   const createData = async (nuevo) => {
-//     try {
-//       const respuesta = await axios.post(API_URL, nuevo);
-//       return respuesta;
-//     } catch (error) {
-//       console.error("Error al crear unidad:", error);
-//     }
-//   };
-
-//   const updateData = async (id, updated) => {
-//     try {
-//       const respuesta = await axios.put(`${API_URL}/${id}`, updated);
-//       return respuesta;
-//     } catch (error) {
-//       console.error("Error al actualizar unidad:", error);
-//     }
-//   };
-
-//   const deleteData = async (id) => {
-//     try {
-//       const respuesta = await axios.delete(`${API_URL}/${id}`);
-//       return respuesta;
-//     } catch (error) {
-//       console.error("Error al eliminar unidad:", error);
-//     }
-//   };
-
-//   return { getData, createData, updateData, deleteData };
-// };
-
-// export default unidadesData;
+export default unidadesData;

@@ -9,7 +9,7 @@ const OrganizacionRegistro = ({ onRegistrar, onClose }) => {
     estado:"",
   });
 
-  const navigate = useNavigate(); // inicializamos navigate
+  const navigate = useNavigate(); 
 
   const handleChange = (e) => {
     const { name, value } = e.target;

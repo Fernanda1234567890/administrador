@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import personasData from "../../services/personas";
-import axios from "axios";
-
-const API_URL = "http://localhost:3000/api/persona";
+import personasData from "../../services/personas"; // Servicio de conexión con el back
 
 const PersonaVer = () => {
   const navigate = useNavigate();
@@ -16,18 +13,18 @@ const PersonaVer = () => {
   const [total, setTotal] = useState(0);
   const [showInactive, setShowInactive] = useState(false);
 
-  // Obtener personas con filtro activo/inactivo
+  // 🔹 Obtener personas desde el backend
   const fetchPersonas = async () => {
     try {
       const estado = showInactive ? "inactivo" : "activo";
-      const res = await axios.get(API_URL, {
-        params: { page, limit, search, estado },
-      });
+      const res = await getData(page, limit, search, estado);
+
       setPersonas(res.data || []);
-      setTotal(res.total || 0);
+      setTotal(res.total || 0); // <- importante que el back devuelva total
     } catch (error) {
       console.error("Error al obtener personas:", error);
       setPersonas([]);
+      setTotal(0);
     }
   };
 
@@ -35,7 +32,7 @@ const PersonaVer = () => {
     fetchPersonas();
   }, [page, search, showInactive]);
 
-  // Actualizar persona
+  // 🔹 Actualizar persona
   const handleActualizar = async (persona) => {
     try {
       const nuevosNombres = prompt("Nombres:", persona.nombres);
@@ -83,7 +80,7 @@ const PersonaVer = () => {
     }
   };
 
-  // Dar de baja persona
+  // 🔹 Dar de baja persona
   const handleBaja = async (id) => {
     if (!window.confirm("¿Desea dar de baja esta persona?")) return;
     try {
@@ -108,26 +105,51 @@ const PersonaVer = () => {
         </button>
       </div>
 
-      {/* Filtros */}
+      {/* 🔹 Filtros de activas / inactivas */}
+      <div className="mb-4 flex gap-2">
+        <button
+          onClick={() => setShowInactive(false)}
+          className={`px-4 py-2 rounded ${
+            !showInactive ? "bg-blue-950 text-white" : "bg-gray-300"
+          }`}
+        >
+          Activas
+        </button>
+        <button
+          onClick={() => {
+            const clave = prompt("Ingrese la clave para ver inactivos:");
+            if (clave === "SISTEM4S") {
+              setShowInactive(true);
+            } else {
+              alert("Clave incorrecta");
+            }
+          }}
+          className={`px-4 py-2 rounded ${
+            showInactive ? "bg-red-600 text-white" : "bg-gray-300"
+          }`}
+        >
+          Inactivas
+        </button>
+      </div>
+
+      {/* 🔹 Buscador */}
       <div className="mb-4 flex gap-2">
         <input
           type="text"
-          placeholder="Buscar por nombres, apellidos o CI"
+          placeholder="Buscar..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="border p-2 rounded"
         />
         <button
-          onClick={() => setShowInactive(!showInactive)}
-          className={`px-3 py-1 rounded text-white ${
-            showInactive ? "bg-red-600" : "bg-blue-700"
-          }`}
+          onClick={() => fetchPersonas()}
+          className="bg-blue-700 text-white px-3 py-1 rounded"
         >
-          {showInactive ? "Ver Activos" : "Ver Inactivos"}
+          Buscar
         </button>
       </div>
 
-      {/* Tabla de personas */}
+      {/* 🔹 Tabla de personas */}
       <div className="max-w-6xl mx-auto overflow-x-auto">
         {personas.length === 0 ? (
           <p>No hay personas registradas.</p>
@@ -191,7 +213,7 @@ const PersonaVer = () => {
               </tbody>
             </table>
 
-            {/* Paginación */}
+            {/* 🔹 Paginación */}
             <div className="flex justify-center gap-2 mt-4">
               <button
                 disabled={page <= 1}

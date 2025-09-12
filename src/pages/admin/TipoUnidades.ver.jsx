@@ -3,52 +3,66 @@ import { useNavigate } from "react-router-dom";
 import tipoUnidadesData from "../../services/tipoUnidades";
 
 const TipoUnidadesVer = () => {
+
   const [tipos, setTipos] = useState([]);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(10);
+  const [search, setSearch] = useState("");
+  const [showInactive, setShowInactive] = useState(false); 
+  const [total, setTotal] = useState(0);
   const { getData, bajaData, updateData } = tipoUnidadesData();
   const navigate = useNavigate();
 
-  const init = async () => {
+  const fetchTipoUnidades = async () => {
     try {
-      const res = await getData();
-      setTipos(res.data);
-    } catch (err) {
-      console.error("Error cargando tipos de unidad", err);
+      const estado = showInactive ? "inactivo" : "activo";
+      const res = await getData(page, 10, search, estado);
+      setTipos(res.data || []);
+    } catch (error) {
+      console.error("Error al obtener organizaciones:", error);
+      setTipos([]);
     }
   };
 
   
   useEffect(() => {
-    init();
-  }, []);
+    fetchTipoUnidades();
+  }, [page, search, showInactive]);
 
-  const handleEliminar = async (id) => {
+  // ✅ Registrar nuevo tipo de unidad
+  const handleRegistrar = async (newTipo) => {
+    try {
+      await createData(newTipo);
+      fetchTipoUnidades(); // refrescar lista
+    } catch (error) {
+      console.error("Error al registrar tipo de unidad:", error);
+    }
+  };
+
+    const handleActualizar = async (tipo) => {
+    const nuevotipo = prompt("Nuevo tipo:", tipo.tipo);
+    const nuevaDescripcion = prompt("Nueva descripción:", tipo.descripcion);
+     if (nuevotipo && nuevaDescripcion) return;
+
+     await updateData(tipo.id, {tipo:nuevotipo, descripcion: nuevaDescripcion});
+     fetchTipoUnidades();
+  };
+
+  const handleBaja = async (id) => {
     if (!window.confirm("¿Dar de baja este registro?")) return;
     try {
       await bajaData(id);
-      setTipos((prev) => prev.filter((i) => i.id !== id));
-    } catch (err) {
-      console.error("Error al dar de baja", err);
+      fetchTipoUnidades();
+    } catch (error) {
+      console.error("Error al dar de baja", error);
+      alert("No se pudo dar de baja el registro:" + error.message);
     }
   };
 
-  const handleActualizar = async (item) => {
-    const tipo = prompt("Nuevo tipo:", item.tipo);
-    const descripcion = prompt("Nueva descripción:", item.descripcion);
-     if (tipo && descripcion) {
-      try {
-        const res = await updateData(item.id, { tipo, descripcion });
-        setTipos((prev) =>
-          prev.map((i) => (i.id === item.id ? res.data : i))
-        );
-      } catch (err) {
-        console.error("Error actualizando", err);
-      }
-    }
-  };
 
   return (
     <div className="p-6 sm:p-2 lg:p-12 min-h-screen dark:bg-white">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between tipos-center mb-4">
       <h2 className="text-2xl font-bold mb-4">Tipos de Unidades Registradas</h2>
        <button
           onClick={() => navigate("/tipo-unidades/registrar")}
@@ -57,6 +71,46 @@ const TipoUnidadesVer = () => {
           Registrar
         </button>
       </div>
+
+        {/* ✅ Aquí van los botones para filtrar activas/inactivas */}
+      <div className="mb-4 flex gap-2">
+        <button
+          onClick={() => setShowInactive(false)}
+          className={`px-4 py-2 rounded ${!showInactive ? "bg-blue-950 text-white" : "bg-gray-300"}`}
+        >
+          Activas
+        </button>
+        <button
+          onClick={() => {
+            const clave = prompt("Ingrese la clave para ver inactivos:");
+            if (clave === "SISTEM4S") {
+              setShowInactive(true);
+            } else {
+              alert("Clave incorrecta");
+            }
+          }}
+          className={`px-4 py-2 rounded ${showInactive ? "bg-red-600 text-white" : "bg-gray-300"}`}
+        >
+          Inactivas
+        </button>
+      </div>
+
+      <div className="mb-4 flex gap-2">
+        <input
+          type="text"
+          placeholder="Buscar por Tipo..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="border p-2 rounded"
+        />
+        <button
+          onClick={() => fetchOrganizaciones()}
+          className="bg-blue-700 text-white px-3 py-1 rounded"
+        >
+          Buscar
+        </button>
+      </div>
+
       <div className="max-w-3xl mx-auto">
       {tipos.length === 0 ? (
         <p>No hay registros</p>
@@ -64,26 +118,29 @@ const TipoUnidadesVer = () => {
         <table className="w-full border-collapse bg-white shadow rounded-lg">
           <thead>
             <tr className="bg-blue-950 text-white">
-              <th>ID</th><th>Tipo</th><th>Descripción</th>
-               <th className="p-3 text-left">Acciones</th>
+                <th className="p-3 text-left">ID</th>
+                <th className="p-3 text-left">Tipo</th>
+                <th className="p-3 text-left">Descripción</th>
+                <th className="p-3 text-left">Acciones</th>
             </tr>
           </thead>
            <tbody>
               {tipos.map((i) => (
                 <tr key={i.id} className="border-b hover:bg-gray-100">
-                  <td>{i.id}</td>
-                  <td>{i.tipo}</td>
-                  <td>{i.descripcion}</td>
+                  <td className="p-3">{i.id}</td>
+                  <td className="p-3">{i.tipo}</td>
+                  <td className="p-3">{i.descripcion}</td>
                   <td className="flex gap-2">
                     <button
-                      className="bg-yellow-500 text-white px-2 rounded"
                       onClick={() => handleActualizar(i)}
+                      className="bg-yellow-500 text-white px-2 rounded" 
                     >
                       Actualizar
                     </button>
                     <button
+                      onClick={() => handleBaja(i.id)}
                       className="bg-red-700 text-white px-2 rounded"
-                      onClick={() => handleEliminar(i.id)}
+                      
                     >
                       Dar de baja
                     </button>
@@ -93,9 +150,26 @@ const TipoUnidadesVer = () => {
             </tbody>
         </table>
       )}
-    </div>
+       {/* Paginación simple */}
+        <div className="flex justify-center mt-4 gap-2">
+          <button
+            disabled={page <= 1}
+            onClick={() => setPage(page - 1)}
+            className="bg-gray-300 px-3 py-1 rounded disabled:opacity-50"
+          >
+            Anterior
+          </button>
+          <span className="px-3 py-1">{page}</span>
+          <button
+            disabled={page >= Math.ceil(total / limit)}
+            onClick={() => setPage(page + 1)}
+            className="bg-gray-300 px-3 py-1 rounded disabled:opacity-50"
+          >
+            Siguiente
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
-
 export default TipoUnidadesVer;

@@ -4,7 +4,7 @@ import React from "react"
 const API_URL = "http://localhost:3000/api/tipo-unidad"
 
  const tipoUnidadesData = () => {
-    const getData = async (page = 1, limit = 10, search = "", estado = "true") => {
+    const getData = async (page = 1, limit = 10, search = "", estado = "") => {
     try {
       const respuesta = await axios.get(API_URL, {
         params: { page, limit, search, estado },

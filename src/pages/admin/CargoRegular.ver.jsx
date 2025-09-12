@@ -25,7 +25,7 @@ const CargoRegularVer = () => {
         params: { page, limit, search, estado },
       });
       setCargos(res.data.data || []);
-      setTotal(res.data.meta?.total || 0);
+      setTotal(res.data.meta?.total || 0); 
     } catch (error) {
       console.error("Error al obtener cargos:", error);
       setCargos([]);
