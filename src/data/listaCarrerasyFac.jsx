@@ -42,3 +42,6 @@ export const listaCarrerasyFac = [
 "Carrera de Odontología ",
 "Programa de Ingeniería en Diseño en Programación Digital"
 ];
+
+
+//10.11.163.207

@@ -1,86 +1,81 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import administrativosData from "../../services/administrativos";
+import personasData from "../../services/personas";
 
 const AdministrativoRegistro = () => {
-  const [formData, setFormData] = useState({
-    idPersona: "",
-  });
-
+  const [formData, setFormData] = useState({ id_persona: "", estado: "activo" });
   const [personas, setPersonas] = useState([]);
   const navigate = useNavigate();
 
+  const { createData } = administrativosData();
+  const { getData: getPerson } = personasData();
+
+  // ✅ Cargar personas desde backend
   useEffect(() => {
-    const storedPersonas = JSON.parse(localStorage.getItem("personas")) || [];
-    setPersonas(storedPersonas);
+    const fetchPersonas = async () => {
+      try {
+        const res = await getPerson();
+        setPersonas(res.data || []);
+      } catch (error) {
+        console.error("Error al obtener personas:", error);
+        setPersonas([]);
+      }
+    };
+    fetchPersonas();
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (window.confirm("¿Está seguro de registrar al administrativo?")) {
-      const newAdministrativo = {
-        id: Date.now(),
-        idPersona: formData.idPersona,
-      };
+    if (!formData.id_persona || !formData.estado) {
+      return alert("Todos los campos son obligatorios");
+    }
 
-      const existing = JSON.parse(localStorage.getItem("administrativos")) || [];
-      localStorage.setItem(
-        "administrativos",
-        JSON.stringify([...existing, newAdministrativo])
-      );
-
-      setFormData({ idPersona: "" });
+    try {
+      await createData(formData); // ✅ Guardar en backend
       alert("Administrativo registrado correctamente ✅");
-
-      navigate("/administrativos/ver");
+      navigate("/administrativos/ver"); // Redirige a la lista
+    } catch (error) {
+      console.error(error);
+      alert("Error al registrar administrativo: " + error.message);
     }
   };
 
   return (
     <div className="p-6 min-h-screen dark:bg-white">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">
-        Registrar Administrativo
-      </h2>
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-4 bg-white p-6 rounded-lg shadow-md"
-      >
-      <input
-        type="text"
-        name="idPersona"
-        value={formData.idPersona}
-        onChange={handleChange}
-        placeholder="ID de la Persona"
-        className="w-full border p-2 rounded"
-        required
-      />
+      <h2 className="text-2xl font-bold mb-4 text-gray-800">Registrar Administrativo</h2>
+      <form onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded-lg shadow-md">
+        <select
+          name="id_persona"
+          value={formData.id_persona}
+          onChange={handleChange}
+          className="w-full border p-2 rounded"
+          required
+        >
+          <option value="">Selecciona una persona</option>
+          {personas.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.nombres} {p.apellidos}
+            </option>
+          ))}
+        </select>
 
-      <div>
-        <label htmlFor="estado" className="block text-sm font-medium mb-1">
-           Estado
-        </label>
-          <select
-            id="estado"
-              name="estado"
-              value={formData.estado}
-              onChange={handleChange}
-              className="w-full border border-gray-300 rounded-md p-2"
-              required
-            >
-              <option value="">Seleccione un estado</option>
-              <option value="activo">Activo</option>
-              <option value="inactivo">Inactivo</option>
-            </select>
-          </div>
-
+        <select
+          name="estado"
+          value={formData.estado}
+          onChange={handleChange}
+          className="w-full border border-gray-300 rounded-md p-2"
+          required
+        >
+          <option value="activo">Activo</option>
+          <option value="inactivo">Inactivo</option>
+        </select>
 
         <button
           type="submit"

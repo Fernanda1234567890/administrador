@@ -1,65 +1,59 @@
 import axios from "axios";
-import React from "react";
 
-const API_URL = "http://localhost:3000/api/organizacion"; 
+const API_URL = "http://localhost:3000/api/organizacion";
 
 const organizacionData = () => {
-  // ✅ Obtener con paginación, búsqueda y filtro de estado
-  const getData = async (page = 1, limit = 10, search = "", estado = "") => {
+  const getData = async (page = 1, limit = 10, search = "", estado = "activo") => {
     try {
       const respuesta = await axios.get(API_URL, {
-        params: { page, limit, search, estado},
+        params: { page, limit, search, estado },
       });
-      return respuesta.data; // devolvemos solo data procesada
+      return respuesta.data;
     } catch (error) {
       console.error("Error al obtener organizaciones:", error);
-      throw error;
+      throw new Error(error.response?.data?.message || "Error al obtener organizaciones");
     }
   };
 
-  // ✅ Crear
   const createData = async (organizacion) => {
     try {
       const respuesta = await axios.post(API_URL, organizacion);
       return respuesta.data;
     } catch (error) {
       console.error("Error al crear organización:", error);
-      throw error;
+      throw new Error(error.response?.data?.message || "Error al crear organización");
     }
   };
 
-  // ✅ Actualizar
   const updateData = async (id, organizacion) => {
     try {
-      const respuesta = await axios.patch(`${API_URL}/${id}`, organizacion);
+      const respuesta = await axios.put(`${API_URL}/${id}`, organizacion);
       return respuesta.data;
     } catch (error) {
       console.error("Error al actualizar organización:", error);
-      throw error;
+      throw new Error(error.response?.data?.message || "Error al actualizar organización");
     }
   };
 
-  // ✅ Dar de baja (soft-delete)
   const bajaData = async (id) => {
     try {
       const respuesta = await axios.delete(`${API_URL}/${id}`);
       return respuesta.data;
     } catch (error) {
       console.error("Error al dar de baja organización:", error);
-      throw error;
+      throw new Error(error.response?.data?.message || "Error al dar de baja organización");
     }
   };
 
-  // ✅ Restaurar
-    const restoreData = async (id) => {
-      try {
-        const respuesta = await axios.patch(`${API_URL}/${id}/restaurar`);
-        return respuesta.data;
-      } catch (error) {
-        console.error("Error al restaurar organización:", error);
-        throw error;
-      }
-    };
+  const restoreData = async (id) => {
+    try {
+      const respuesta = await axios.patch(`${API_URL}/${id}/restaurar`);
+      return respuesta.data;
+    } catch (error) {
+      console.error("Error al restaurar organización:", error);
+      throw new Error(error.response?.data?.message || "Error al restaurar organización");
+    }
+  };
 
   return {
     getData,

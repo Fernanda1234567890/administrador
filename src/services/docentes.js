@@ -1,34 +1,59 @@
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api/docente";
+const API_URL = "http://localhost:3000/api/docente";
 
-export default function docentesData() {
-  return {
-    async getData(page = 1, limit = 10) {
-      const res = await axios.get(`${API_URL}/docente`, {
-        params: { page, limit },
-      });
+const docentesData = () => {
+  const getData = async (page = 1, limit = 10, search = "", estado = "") => {
+    try {
+      const res = await axios.get(API_URL, { params: { page, limit, search, estado } });
       return res.data;
-    },
-
-    async create(data) {
-      const res = await axios.post(`${API_URL}/docente`, data);
-      return res.data;
-    },
-
-    async update(id, data) {
-      const res = await axios.patch(`${API_URL}/docente/${id}`, data);
-      return res.data;
-    },
-
-    async remove(id) {
-      const res = await axios.delete(`${API_URL}/docente/${id}`);
-      return res.data;
-    },
-
-    async restore(id) {
-      const res = await axios.patch(`${API_URL}/docente/restore/${id}`);
-      return res.data;
-    },
+    } catch (error) {
+      console.error("Error al obtener docentes:", error);
+      throw error;
+    }
   };
-}
+
+  const createData = async (data) => {
+    try {
+      const res = await axios.post(API_URL, data);
+      return res.data;
+    } catch (error) {
+      console.error("Error al crear docente:", error);
+      throw error;
+    }
+  };
+
+  const updateData = async (id, data) => {
+    try {
+      const res = await axios.patch(`${API_URL}/${id}`, data);
+      return res.data;
+    } catch (error) {
+      console.error("Error al actualizar docente:", error);
+      throw error;
+    }
+  };
+
+  const bajaData = async (id) => {
+    try {
+      const res = await axios.delete(`${API_URL}/${id}`);
+      return res.data;
+    } catch (error) {
+      console.error("Error al eliminar docente:", error);
+      throw error;
+    }
+  };
+
+  const restoreData = async (id) => {
+    try {
+      const res = await axios.patch(`${API_URL}/${id}/restaurar`);
+      return res.data;
+    } catch (error) {
+      console.error("Error al restaurar docente:", error);
+      throw error;
+    }
+  };
+
+  return { getData, createData, updateData, bajaData, restoreData };
+};
+
+export default docentesData;
