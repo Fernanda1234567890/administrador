@@ -1,44 +1,44 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { postData } from "../../services/api"; // ✅ Asegúrate de tener esta función
 
 const CargoIntermedioRegistro = () => {
   const [formData, setFormData] = useState({
     nombre: "",
     descripcion: "",
-    nivel_jerarquico: "",
-    id_unidad: "",
-    estado: "activo",
+    nivelJerarquico: "",
+    idUnidad: "",
   });
 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Para redirigir después de registrar
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    try {
-      await postData("http://localhost:3000/api/cargo-intermedio", formData);
-      alert("Cargo intermedio registrado con éxito ✅");
+    if (window.confirm("¿Está seguro de registrar este cargo intermedio?")) {
+      const newCargo = {
+        id: Date.now(), // Genera un ID único automáticamente
+        ...formData,
+      };
 
-      // Limpiar formulario
+      const cargos = JSON.parse(localStorage.getItem("cargosIntermedios")) || [];
+      localStorage.setItem("cargosIntermedios", JSON.stringify([...cargos, newCargo]));
+
       setFormData({
         nombre: "",
         descripcion: "",
-        nivel_jerarquico: "",
-        id_unidad: "",
-        estado: "activo",
+        nivelJerarquico: "",
+        idUnidad: "",
       });
 
-      // Redirigir a la lista
+      alert("Cargo intermedio registrado con éxito ✅");
+
+      // Redirigir automáticamente a la vista de cargos intermedios
       navigate("/cargos-intermedios/ver");
-    } catch (error) {
-      console.error(error);
-      alert("Error al registrar: " + error.message);
     }
   };
 
@@ -60,7 +60,6 @@ const CargoIntermedioRegistro = () => {
           className="w-full border p-2 rounded"
           required
         />
-
         <textarea
           name="descripcion"
           placeholder="Descripción"
@@ -69,12 +68,11 @@ const CargoIntermedioRegistro = () => {
           className="w-full border p-2 rounded"
           required
         ></textarea>
-
-        <div>
+         <div>
           <label className="block text-sm font-medium mb-1">Nivel Jerárquico</label>
           <select
-            name="nivel_jerarquico"
-            value={formData.nivel_jerarquico}
+            name="nivelJerarquico"
+            value={formData.nivelJerarquico}
             onChange={handleChange}
             className="w-full border border-gray-300 rounded-md p-2"
             required
@@ -85,19 +83,17 @@ const CargoIntermedioRegistro = () => {
             <option value="Bajo">Bajo</option>
           </select>
         </div>
-
         <input
           type="text"
-          name="id_unidad"
+          name="idUnidad"
           placeholder="ID Unidad"
-          value={formData.id_unidad}
+          value={formData.idUnidad}
           onChange={handleChange}
           className="w-full border p-2 rounded"
           required
         />
-
         <button
-          type="submit"
+          type="submit" 
           className="w-full bg-red-700 text-white py-2 px-4 rounded-lg hover:bg-red-800"
         >
           Registrar
