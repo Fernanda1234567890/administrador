@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from "../../contexts/UserContext";
+import UsuarioService from "../../services/Usuario";
+import { login } from "../../services/auth"; 
 
 
 const Login = () => {
@@ -9,91 +11,65 @@ const Login = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { setUser } = useUser();
+  const [rememberMe, setRememberMe] = useState(false);
 
+  useEffect(() => {
+    setEmail('');
+    setPassword('');
+    setError('');
+    setUser(null);
+    localStorage.removeItem("token");
+  }, []);
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  // Validación básica
     if (!email || !password) {
       setError("Por favor completa todos los campos");
       return;
     }
 
-//   try {
-//     const response = await fetch('http://localhost:3000/api/auth/login', {
-//       method: 'POST',
-//       headers: { 'Content-Type': 'application/json' },
-//     //   body: JSON.stringify({ email: 'admin@uatf.bo', password:'123456' }),
-//     // });
-//      body: JSON.stringify({ email, password }), // tomamos los valores reales del formulario
-//       });
+    try {
+      const data = await UsuarioService.login(email, password);
 
-//     const data = await response.json(); // obtenemos la respuesta del backend
+      setUser(data.user);
 
-//  if (response.ok) {
-//         console.log('Login exitoso', data);
-
-//         // Guardamos el token
-//         localStorage.setItem('token', data.access_token);
-
-//         // ✅ Actualizamos el contexto con los datos reales del usuario
-//         setUser({
-//           name: data.user?.name || "Administrador", // nombre real del backend o "Administrador" por defecto
-//           email: data.user?.email || email,
-//           avatar: data.user?.avatar || "" // si no hay avatar, dejamos vacío
-//         });
-
-//         // Redirigimos al dashboard
-//         navigate('/');
-//       } else {
-//         setError(data.message || 'Credenciales incorrectas');
-//       }
-//     } catch (err) {
-//       console.error(err);
-//       setError('Error al conectar con el servidor');
-//     }
-//   };
-
-   try {
-      // Simulación de backend
-      // Reemplaza esto con tu fetch real
-      const fakeBackendResponse = {
-        ok: email === "admin@uatf.bo" && password === "123456",
-        user: { name: "Administrador", email: "admin@uatf.bo", avatar: "" },
-        access_token: "123456abcdef"
-      };
-
-      if (fakeBackendResponse.ok) {
-        localStorage.setItem("token", fakeBackendResponse.access_token);
-        setUser(fakeBackendResponse.user); // Actualizamos contexto
-        navigate("/"); // redirige al dashboard
+      if (rememberMe) {
+        localStorage.setItem("token", data.access_token); 
+        localStorage.setItem("user", JSON.stringify(data.user));
       } else {
-        setError("Credenciales incorrectas");
+        sessionStorage.setItem("token", data.access_token);
+        sessionStorage.setItem("user", JSON.stringify(data.user));
       }
+
+      setEmail('');
+      setPassword('');
+      setError('');
+
+      navigate("/"); 
     } catch (err) {
-      console.error(err);
-      setError("Error al conectar con el servidor");
+      setError(err.response?.data?.message || err.message || "Error al iniciar sesión");
     }
-  };
+};
 
   return (
     <div
-      className="relative min-h-screen flex items-center justify-center"
+      className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-[#082F47]/80 to-red-700/80"
       style={{
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/src/assets/1010.jpg')`, // Usamos la ruta del primero (en public/)
+        backgroundImage: `linear-gradient(rgba(15, 0, 58, 0.6), rgba(0,0,0,0.6)), url('/src/assets/FRONTIS.png')`,
         backgroundBlendMode: 'overlay',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
     >
-      <div className="backdrop-blur-md bg-white/20 p-10 rounded-2xl w-80 shadow-lg text-white">
+      <div className="w-full max-w-xs bg-white/15 backdrop-blur-md p-8 sm:p-10 rounded-2xl shadow-lg text-white">
+        {/* Logo */}
         <div className="flex justify-center mb-6">
-          <div className="bg-white/20 p-4 rounded-full">
+          <div className="bg-white/15 rounded-full ">
             <img
-              src="/logo-uatf.png" // Usamos la ruta del segundo (en public/)
+              src="/logo-uatf.png"
               alt="User Image"
-              className="w-18 h-15 object-cover rounded-full"
+              className="w-20 h-25 sm:w-35 sm:h-30 object-cover rounded-full"
             />
           </div>
         </div>
@@ -104,20 +80,15 @@ const handleSubmit = async (e) => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-2">
           <div>
-            <label htmlFor="email" className="text-sm font-medium">
-              Email ID
-            </label>
+            <label htmlFor="email" className="text-sm font-medium">Email ID</label>
             <div className="flex items-center border-b border-white/30 py-2">
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75L12 13.5 2.25 6.75" />
-              </svg>
               <input
                 id="email"
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => { setEmail(e.target.value); setError(''); }}
                 placeholder="Email"
                 className="bg-transparent outline-none flex-1 text-sm placeholder-white/60"
               />
@@ -125,37 +96,37 @@ const handleSubmit = async (e) => {
           </div>
 
           <div>
-            <label htmlFor="password" className="text-sm font-medium">
-              Password
-            </label>
+            <label htmlFor="password" className="text-sm font-medium">Password</label>
             <div className="flex items-center border-b border-white/30 py-2">
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V9a4.5 4.5 0 10-9 0v1.5m1.5 0h6M6 10.5h12v8.25a1.5 1.5 0 01-1.5 1.5h-9a1.5 1.5 0 01-1.5-1.5V10.5z" />
-              </svg>
               <input
                 id="password"
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => { setPassword(e.target.value); setError(''); }}
                 placeholder="Password"
                 className="bg-transparent outline-none flex-1 text-sm placeholder-white/60"
               />
             </div>
           </div>
 
-           <div className="flex items-center justify-between text-sm">
-            <label className="flex items-center gap-2">
-              <input type="checkbox" className="form-checkbox text-indigo-500" />
-              Remember me
-            </label>
-            <a href="#" className="text-white/70 hover:underline">
+          <div className="flex items-center justify-between text-sm">
+           <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+              className="form-checkbox text-indigo-500"
+            />
+            Remember me
+          </label>
+            <a href="/forgot-password" className="text-white/70 hover:underline">
               Forgot Password?
             </a>
           </div>
 
           <button
             type="submit"
-            className="w-full py-2 mt-2 bg-gradient-to-r from-[#AB2A2A] to-[#082F47] rounded-lg font-bold text-sm tracking-widest"
+               className="w-full py-2 mt-2 bg-red-700 hover:bg-[#AB2A2A] text-white rounded-lg font-bold text-sm tracking-widest"
           >
             LOGIN
           </button>

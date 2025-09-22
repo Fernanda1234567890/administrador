@@ -1,21 +1,36 @@
 import React from 'react';
+import { useUser } from "../../contexts/UserContext"; 
 
 const Dashboard = () => {
+  const { user } = useUser(); 
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen pt-6">
+    <div className="relative flex flex-col items-center justify-center min-h-screen px-4 lg:px-8">
+      {/* Fondo */}
       <div
-        className="w-full h-full bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none"
         style={{ backgroundImage: "url('/fondo1.svg')" }}
       ></div>
-      <div className="text-center pt-10 z-10 flex flex-col items-center justify-center pointer-events-none">
-        <h1 className="text-5xl font-black text-blue-950">Universidad Autónoma Tomás Frías</h1>
-        <h2 className="text-3xl font-semibold text-gray-700 mt-2">DATA CENTER</h2>
-        <p className="text-xl text-gray-600 mt-2">Bienvenido Victor</p>
-        <div className="mt-6 pointer-events-auto">
+
+      {/* Contenido */}
+      <div className="relative z-10 flex flex-col items-center justify-center text-center">
+        <h1 className="text-2xl md:text-3xl font-black text-blue-950">
+          Universidad Autónoma Tomás Frías
+        </h1>
+        {user ? (
+          <p className="text-lg md:text-xl text-gray-600 mt-2">
+            Bienvenido {user.name}
+          </p>
+        ) : (
+          <p className="text-lg md:text-xl text-gray-600 mt-2">
+            Bienvenido
+          </p>
+        )}
+        <div className="mt-6">
           <img
-            src="/logo-uatf.png" // Coloca en public
-            alt="Data Center Illustration"
-            className="mx-auto rounded-lg "
+            src="/logo-uatf.png"
+            alt="Logo UATF"
+            className="mx-auto rounded-lg w-28 md:w-32 lg:w-40 h-auto"
           />
         </div>
       </div>

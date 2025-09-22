@@ -1,68 +1,45 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X } from "lucide-react"; // Ícono hamburguesa y cerrar
-import { FaChevronRight } from "react-icons/fa"; // Ícono para submenús
+import { Menu, X } from "lucide-react"; 
+import { FaChevronRight } from "react-icons/fa"; 
 import FRONTIS from "../../assets/FRONTIS.png";
 import { useUser } from "../../contexts/UserContext"
 
 
 const SideBar = () => {
-  const [openMenu, setOpenMenu] = useState(null); // Estado para manejar submenús
-  const [isOpen, setIsOpen] = useState(false); // Estado para el sidebar en pantallas pequeñas
-  const [isCompact, setIsCompact] = useState(false); // Estado para el modo comprimido
+  const [openMenu, setOpenMenu] = useState(null); 
+  const [isOpen, setIsOpen] = useState(false); 
+  const [isCompact, setIsCompact] = useState(false); 
   const { user } = useUser();
-  // Función para abrir/cerrar submenús
-  const toggleMenu = (menuKey) => {
-    setOpenMenu(openMenu === menuKey ? null : menuKey);
-  };
-
-  // Función para togglear el sidebar en pantallas pequeñas
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
-
-  // Función para togglear entre modo completo y comprimido
+  
+  const toggleSidebar = () => setIsOpen(!isOpen);
   const toggleCompact = () => {
     setIsCompact(!isCompact);
-    if (!isCompact) setIsOpen(false); // Cierra el sidebar al activar modo comprimido
+    if (!isCompact) setIsOpen(false);
+  };
+
+  // Función para abrir/cerrar submenú
+   const toggleMenu = (menuKey) => {
+    setOpenMenu(openMenu === menuKey ? null : menuKey);
   };
 
   return (
     <>
-      {/* Botón de hamburguesa (visible en pantallas <lg) */}
-      <button
-        className="fixed top-4 left-4 z-50 p-2 rounded-md bg-[#082F47] text-white hover:bg-red-700 transition-colors duration-200 lg:hidden"
-        onClick={toggleSidebar}
-        aria-label="Toggle sidebar menu"
-      >
-        {isOpen ? <X size={24} /> : <Menu size={24} />}
-      </button>
-
-      {/* Sidebar Completo */}
       <aside
         id="default-sidebar"
-        className={`fixed top-0 left-0 z-40 h-screen w-64 bg-gradient-to-b from-[#082F47] via-[#082F47]/100 to-red-700 text-white p-4 overflow-y-auto transition-transform duration-300 ease-in-out
+        className={`fixed top-0 left-0 z-70 h-screen w-64 bg-gradient-to-b from-[#082F47] via-[#082F47]/100 to-red-700 text-white p-4 overflow-y-auto transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full"} ${isCompact ? "hidden" : ""} lg:translate-x-0 lg:block`}
       >
-        {/* Indicadores de estado (puntos rojo, amarillo, verde) */}
-        <div className="flex justify-start mb-2">
+        <div className="flex justify-end mb-2">
           <span className="w-2 h-2 bg-red-500 rounded-full mr-1"></span>
           <span className="w-2 h-2 bg-yellow-500 rounded-full mr-1"></span>
           <span className="w-2 h-2 bg-green-500 rounded-full"></span>
         </div>
 
-        {/* Botón de cerrar en móvil */}
-        <button
-          className="lg:hidden text-white mb-4 focus:outline-none"
-          onClick={toggleSidebar}
-        >
-          <X size={24} />
-        </button>
-
       {/* Sección del Usuario */}
-      <div className="flex items-center mb-6 p-2 bg-gray-800 rounded-lg">
+      <div className="flex items-center mb-4 p-2 bg-gray-800 rounded-lg">
         <img
-          className="w-12 h-12 rounded-full mr-3"
+          className="w-12 h-12 rounded-full mr-5"
           src={
             user?.avatar ||
             `https://ui-avatars.com/api/?name=${encodeURIComponent(
@@ -73,16 +50,16 @@ const SideBar = () => {
         />
         <div>
           <Link
-            to="/my-account"
+            to="/"
             className="text-sm text-gray-300 hover:text-white"
           >
-            {user?.name || ""} {/* ya no aparece "Invitado" */}
+            {user?.name || ""}
           </Link>
         </div>
       </div>
 
 
-        {/* Enlaces de navegación con secciones */}
+        {/* navegación con secciones */}
         <ul className="space-y-4 font-medium">
           {/* Sección Unidades */}
           <div>
@@ -486,6 +463,108 @@ const SideBar = () => {
             </li>
           </div>
 
+                {/* Sección Carreras */}
+          {/* Sección Facultades y Carreras */}
+          <div>
+            <h3 className="text-xs font-semibold text-gray-300 uppercase mb-2">Facultades y Carreras</h3>
+            <li>
+              <button
+                onClick={() => toggleMenu("facultades-carreras")}
+                className={`flex items-center justify-between w-full p-2 rounded-lg transition-colors duration-200
+                  ${openMenu === "facultades-carreras" ? "bg-red-900 text-white" : "text-white hover:bg-gray-700"}`}
+              >
+                <span className="flex-1 text-left ml-3">Facultades y Carreras</span>
+                <FaChevronRight
+                  className={`transition-transform duration-200 ${openMenu === "facultades-carreras" ? "rotate-90" : ""}`}
+                />
+              </button>
+              {openMenu === "facultades-carreras" && (
+                <ul className="pl-6 mt-2 space-y-1">
+                  {/* Facultades */}
+                  <li>
+                    <Link
+                      to="/facultad/registrar"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Registrar Facultad
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/facultad/ver"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Ver Facultades
+                    </Link>
+                  </li>
+
+                  {/* Carreras */}
+                  <li>
+                    <Link
+                      to="/carrera/registrar"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Registrar Carrera
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/carrera/ver"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Ver Carreras
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </li>
+          </div>
+
+
+          {/* Sección Usuarios */}
+          <div>
+            <h3 className="text-xs font-semibold text-gray-300 uppercase mb-2">Usuarios</h3>
+            <li>
+              <button
+                onClick={() => toggleMenu("usuarios")}
+                className={`flex items-center justify-between w-full p-2 rounded-lg transition-colors duration-200
+                  ${openMenu === "usuarios" ? "bg-red-900 text-white" : "text-white hover:bg-gray-700"}`}
+              >
+                <span className="flex-1 text-left ml-3">Usuarios</span>
+                <FaChevronRight
+                  className={`transition-transform duration-200 ${openMenu === "usuarios" ? "rotate-90" : ""}`}
+                />
+              </button>
+              {openMenu === "usuarios" && (
+                <ul className="pl-6 mt-2 space-y-1">
+                  <li>
+                    <Link
+                      to="/usuarios/registrar"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Registrar
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/usuarios/ver"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Ver Lista
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </li>
+          </div>
+
+
           {/* Sección Sesión */}
           <div>
             <h3 className="text-xs font-semibold text-gray-300 uppercase mb-2">Sesión</h3>
@@ -522,25 +601,86 @@ const SideBar = () => {
           </p>
         </div>
       </aside>
-
-      {/* Overlay para cerrar el sidebar en pantallas pequeñas */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-          onClick={toggleSidebar}
-        ></div>
-      )}
-
-      {/* Botón para togglear modo comprimido (visible en pantallas sm o más) */}
-      <button
-        className="fixed top-4 right-4 z-50 p-2 rounded-md bg-[#082F47] text-white hover:bg-red-700 transition-colors duration-200 hidden sm:block"
-        onClick={toggleCompact}
-        aria-label="Toggle compact menu"
-      >
-        {isCompact ? <Menu size={24} /> : <span>Menu</span>}
-      </button>
     </>
   );
 };
 
 export default SideBar;
+
+// import React, { useState } from "react";
+// import { Link } from "react-router-dom";
+// import { FaChevronRight } from "react-icons/fa";
+// import FRONTIS from "../../assets/FRONTIS.png";
+// import { useUser } from "../../contexts/UserContext";
+// import { sidebarConfig } from "../../config/sidebarConfig";
+// import { hasPermission } from "../../utils/permissions"; // la función que acabamos de crear
+
+// const SideBar = () => {
+//   const { user } = useUser();
+//   const [openMenu, setOpenMenu] = useState(null);
+
+//   const toggleMenu = (menuKey) => setOpenMenu(openMenu === menuKey ? null : menuKey);
+
+//   return (
+//     <aside className="fixed top-0 left-0 h-screen w-64 bg-gradient-to-b from-[#082F47] via-[#082F47]/100 to-red-700 text-white p-4 overflow-y-auto">
+      
+//       {/* Usuario */}
+//       <div className="flex items-center mb-4 p-2 bg-gray-800 rounded-lg">
+//         <img
+//           className="w-12 h-12 rounded-full mr-3"
+//           src={user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || "")}`}
+//           alt="User profile"
+//         />
+//         <div>{user?.name || ""}</div>
+//       </div>
+
+//       {/* Secciones dinámicas */}
+//       <ul className="space-y-4 font-medium">
+//         {sidebarConfig.map((section, i) => {
+//           // Filtrar items visibles según permisos
+//           const visibleItems = section.items.filter(item => hasPermission(user, item.permissions));
+//           if (!visibleItems.length) return null; // si no hay items permitidos, no mostrar sección
+
+//           return (
+//             <div key={i}>
+//               <h3 className="text-xs font-semibold text-gray-300 uppercase mb-2">{section.section}</h3>
+//               <li>
+//                 <button
+//                   onClick={() => toggleMenu(section.section)}
+//                   className="flex items-center justify-between w-full p-2 rounded-lg text-white hover:bg-gray-700 transition-colors duration-200"
+//                 >
+//                   <span className="flex-1 text-left ml-2">{section.section}</span>
+//                   <FaChevronRight className={`transition-transform duration-200 ${openMenu === section.section ? "rotate-90" : ""}`} />
+//                 </button>
+//                 {openMenu === section.section && (
+//                   <ul className="pl-6 mt-2 space-y-1">
+//                     {visibleItems.map((item, j) => (
+//                       <li key={j}>
+//                         <Link
+//                           to={item.path}
+//                           className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+//                         >
+//                           {item.label}
+//                         </Link>
+//                       </li>
+//                     ))}
+//                   </ul>
+//                 )}
+//               </li>
+//             </div>
+//           );
+//         })}
+//       </ul>
+
+//       {/* Imagen Footer */}
+//       <div className="mt-auto text-center pt-4 border-t border-gray-100">
+//         <img src={FRONTIS} alt="Logo" className="w-20 h-20 mx-auto mb-2 sm:w-30 sm:h-30" />
+//         <p className="text-white text-sm font-semibold">
+//           UNIVERSIDAD AUTÓNOMA TOMÁS FRÍAS
+//         </p>
+//       </div>
+//     </aside>
+//   );
+// };
+
+// export default SideBar;

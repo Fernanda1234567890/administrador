@@ -6,9 +6,13 @@ const Logout = () => {
   const { setUser } = useUser();
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); // borra token
-    setUser(null); // limpia contexto
-    navigate("/login"); // redirige al login
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
+
+    setUser(null); 
+    navigate("/login");
   };
 
   return (
