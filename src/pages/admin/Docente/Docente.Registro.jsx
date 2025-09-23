@@ -61,7 +61,7 @@ const handleSubmit = async (e) => {
     alert("Docente registrado correctamente");
     setFormData({ personaId: "", carreraId: "" });
 
-    navigate("/docente/ver");
+    navigate("/docentes/ver");
   } catch (error) {
     console.error("Error al crear docente:", error.response?.data || error.message);
     alert(error.response?.data?.message || "Error al registrar docente");

@@ -13,6 +13,16 @@ const cargosIntermediosData = () => {
     }
   };
 
+  const getAll = async () => {
+    try {
+      const respuesta = await axios.get(API_URL); // sin paginación
+      return respuesta.data;
+    } catch (error) {
+      console.error("Error al obtener todos los cargos intermedios:", error);
+      return [];
+    }
+  };
+
   const createData = async (nuevoCargo) => {
     try {
       const respuesta = await axios.post(API_URL, nuevoCargo);
@@ -22,6 +32,17 @@ const cargosIntermediosData = () => {
       throw error;
     }
   };
+
+  const assignCargo = async (data) => {
+    try {
+      const res = await axios.post("http://localhost:3000/api/cargo-intermedio-docente", data);
+      return res.data;
+    } catch (error) {
+      console.error("Error al asignar cargo intermedio a docente:", error);
+      throw error;
+    }
+  };
+
 
   const updateData = async (id, updatedCargo) => {
     try {
@@ -43,7 +64,7 @@ const cargosIntermediosData = () => {
     }
   };
 
-  return { getData, createData, updateData, deleteData };
+  return { getData, getAll, createData, assignCargo, updateData, deleteData };
 };
 
 export default cargosIntermediosData;

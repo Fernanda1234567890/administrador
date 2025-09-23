@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from "react";
 import carrerasData from "../../../services/carreras";
 import axios from "axios";
+import { Link } from "react-router-dom";
+
 
 const CarreraVer = () => {
   const [carreras, setCarreras] = useState([]);
   const [facultades, setFacultades] = useState([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [limit] = useState(5);
+  const [limit] = useState(10);
   const [total, setTotal] = useState(0);
   const [showInactive, setShowInactive] = useState(false);
 
   const { getData, deleteData, createData, updateData } = carrerasData();
 
-  // ------------------------------
   // Cargar carreras
   // ------------------------------
   const fetchCarreras = async () => {
@@ -36,7 +37,6 @@ const CarreraVer = () => {
     }
   };
 
-  // ------------------------------
   // Cargar facultades
   // ------------------------------
   const fetchFacultades = async () => {
@@ -132,10 +132,10 @@ const CarreraVer = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto mt-6 p-4 bg-white shadow rounded-lg">
+    <div className="p-6 sm:p-2 lg:p-12 min-h-screen dark:bg-white">
       {/* Encabezado */}
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Lista de Carreras</h2>
+        <h2 className="text-2xl font-bold mb-4">Lista de Carreras</h2>
       </div>
 
       {/* Buscador + Registrar */}
@@ -153,12 +153,12 @@ const CarreraVer = () => {
         >
           Buscar
         </button>
-        <button
-          onClick={handleRegistrar}
+        <Link
+          to="/carrera/registrar"
           className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
         >
           Registrar
-        </button>
+        </Link>
       </div>
 
       {/* Tabla */}

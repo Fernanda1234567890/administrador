@@ -129,7 +129,7 @@ const PersonaVer = () => {
       </div>
 
       {/* 🔹 Tabla de personas */}
-      <div className="w-full h-full overflow-x-auto p-2">
+      <div className="w-full overflow-x-auto">
         {personas.length === 0 ? (
           <p className="text-gray-600">No hay personas registradas.</p>
         ) : (

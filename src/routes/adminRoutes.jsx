@@ -132,6 +132,11 @@ import FacultadRegistro from "../pages/admin/Facultad/Facultad.Registro";
 import FacultadVer from "../pages/admin/Facultad/Facultad.ver";
 import CarreraRegistro from "../pages/admin/Carrera/Carrera.Registro";
 import CarreraVer from "../pages/admin/Carrera/Carrera.ver";
+import DocenteAsignacion from "../pages/admin/Asignacion/DocenteAsignacion";
+import AsignacionesList from "../pages/admin/Asignacion/AsignacionesList";
+import AsignacionesAdminList from "../pages/admin/Asignacion/AsignacionesAdminList";
+import AdministrativoAsignacion from "../pages/admin/Asignacion/AdministrativoAsignacion";
+
 
 const adminRoutes = [
   { path: "usuarios/registrar", element: <Register /> },
@@ -159,6 +164,11 @@ const adminRoutes = [
   { path: "facultad/ver", element: <FacultadVer /> },
   { path: "carrera/registrar", element: <CarreraRegistro /> },
   { path: "carrera/ver", element: <CarreraVer /> },
+  { path: "/docente/asignacion/:id", element: <DocenteAsignacion /> },
+ // { path: "/asignaciones/ver", element: <AsignacionesList />},
+  { path: "/administrativo/asignacion/:id", element: <AdministrativoAsignacion /> },
+  { path: "/asignaciones-admin/ver", element: <AsignacionesAdminList /> },
+  { path: "/asignaciones-docentes/ver", element: <AsignacionesList />},
 ];
 
 export default adminRoutes;

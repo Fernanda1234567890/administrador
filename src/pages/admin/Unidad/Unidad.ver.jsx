@@ -24,7 +24,7 @@ const UnidadVer = () => {
       const estado = showInactive ? "inactivo" : "activo";
       const resUnidades = await getData(page, limit, search, "", "", estado);
       setUnidades(resUnidades.data || []);
-      setTotal(resUnidades.total || 0);
+      setTotal(resUnidades.meta?.total || 0);
 
       const resTipos = await getTipos();
       setTipos(resTipos.data || []);
@@ -96,7 +96,7 @@ const UnidadVer = () => {
         </button>
       </div>
 
-      <div className="max-w-5xl mx-auto">
+      <div className="w-full overflow-x-auto">
         {loading ? (
           <p>Cargando unidades...</p>
         ) : unidades.length === 0 ? (

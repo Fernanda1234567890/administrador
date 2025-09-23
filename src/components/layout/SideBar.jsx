@@ -524,6 +524,46 @@ const SideBar = () => {
             </li>
           </div>
 
+          {/* Sección Asignaciones */}
+          <div>
+            <h3 className="text-xs font-semibold text-gray-300 uppercase mb-2">Asignaciones</h3>
+            <li>
+              <button
+                onClick={() => toggleMenu("asignaciones")}
+                className={`flex items-center justify-between w-full p-2 rounded-lg transition-colors duration-200
+                  ${openMenu === "asignaciones" ? "bg-red-900 text-white" : "text-white hover:bg-gray-700"}`}
+              >
+                <span className="flex-1 text-left ml-3">Asignaciones</span>
+                <FaChevronRight
+                  className={`transition-transform duration-200 ${
+                    openMenu === "asignaciones" ? "rotate-90" : ""
+                  }`}
+                />
+              </button>
+              {openMenu === "asignaciones" && (
+                <ul className="pl-6 mt-2 space-y-1">
+                  <li>
+                    <Link
+                      to="/asignaciones-docentes/ver"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Docentes
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/asignaciones-admin/ver"
+                      className="block p-2 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Administrativos
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </li>
+          </div>
 
           {/* Sección Usuarios */}
           <div>

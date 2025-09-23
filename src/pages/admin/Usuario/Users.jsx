@@ -31,7 +31,7 @@ const Users = () => {
     }
   };
 
-  if (loading) return <p>Cargando usuarios...</p>;
+  if (loading) return <p>Sin acceso...</p>;///Cargando usuarios
 
   return (
     <div className="max-w-4xl mx-auto p-4">

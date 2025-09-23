@@ -85,7 +85,7 @@ const DocenteVer = () => {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold mb-4 text-gray-800">Lista de Docentes</h2>
         <button
-          onClick={() => navigate("/docente/registrar")}
+          onClick={() => navigate("/docentes/registrar")}
           className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"
         >
           Registrar
@@ -110,7 +110,7 @@ const DocenteVer = () => {
         </button>
       </div>
 
-      <div className="max-w-3xl mx-auto">
+      <div className="w-full overflow-x-auto">
         {docentes.length === 0 ? (
           <p className="text-gray-600">No hay docentes registrados.</p>
         ) : (
@@ -137,6 +137,13 @@ const DocenteVer = () => {
                 </td>                
                 {/* Botones */}
                 <td className="p-3 flex gap-2">
+                  
+                  <button
+                    onClick={() => navigate(`/docente/asignacion/${doc.id}`)}
+                    className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+                  >
+                    Asignación
+                  </button>
                   <button
                     onClick={() => handleActualizar(doc)}
                     className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"

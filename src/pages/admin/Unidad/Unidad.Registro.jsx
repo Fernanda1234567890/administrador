@@ -9,10 +9,10 @@ const UnidadRegistro = ({ onRegistrar, onClose }) => {
     descripcion: "",
     responsable: "",
     dependeDe: "",
-   // idTipoUnidad: "",
+    id_tipo_unidad: "",
   });
 
-  const [logo, setLogo] = useState(null);
+  //const [logo, setLogo] = useState(null);
 
   const [tiposUnidad, setTiposUnidad] = useState([]);
   const [unidades, setUnidades] = useState([]);
@@ -21,30 +21,28 @@ const UnidadRegistro = ({ onRegistrar, onClose }) => {
   const { createData, getData: getUnidades } = unidadesData();
   const { getData: getTiposUnidad } = tipoUnidadesData();
 
-  useEffect(() => {
-    const fetchTipos = async () => {
-      try {
-        const res = await getTiposUnidad();
-        // console.log("Tipos de unidad:", res.data);
-        setTiposUnidad(res.data || []);
-      } catch {
-        console.error(err);
-        setTiposUnidad([]);
-      }
-    };
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const unidadesRes = await getUnidades(1, 1000, {}, "", "", "", "activo");
+      console.log(unidadesRes.data); 
 
-    const fetchUnidades = async () => {
-      try {
-        const res = await getUnidades();
-        setUnidades(res.data || []);
-      } catch {
-        setUnidades([]);
-      }
-    };
+      setUnidades(unidadesRes.data?.data || []); 
 
-    fetchTipos();
-    fetchUnidades();
-  }, []);
+      const tiposRes = await getTiposUnidad(1, 1000, {}, "", "", "", "activo");
+      console.log(tiposRes.data);
+
+      setTiposUnidad(tiposRes.data || []);
+    } catch (err) {
+      console.error("Error cargando datos:", err);
+      setUnidades([]);
+      setTiposUnidad([]);
+    }
+  };
+
+  fetchData();
+}, []);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -61,17 +59,25 @@ const UnidadRegistro = ({ onRegistrar, onClose }) => {
       logo: formData.logo || null,
       responsable: formData.responsable,
       id_unidad: formData.dependeDe ? Number(formData.dependeDe) : null,
-      id_tipo_unidad: Number(formData.idTipoUnidad),
+      id_tipo_unidad: Number(formData.id_tipo_unidad),
       estado: true,
     };
 
     try {
       await createData(newUnidad);
-      alert("Unidad registrada correctamente ✅");
-      setFormData({ nombre: "", descripcion: "", logo: "", responsable: "", dependeDe: "", idTipoUnidad: "" });
+      alert("Unidad registrada correctamente ");
+      setFormData({
+        nombre: "",
+        descripcion: "",
+        logo: "",
+        responsable: "",
+        dependeDe: "",
+        id_tipo_unidad: "",
+      });
+
       if (onRegistrar) onRegistrar(newUnidad);
       if (onClose) onClose();
-      navigate("/unidades/ver");
+      else navigate("/unidades/ver");
     } catch (error) {
       alert("Error al registrar unidad: " + (error.response?.data?.message || error.message));
     }
@@ -95,27 +101,26 @@ const UnidadRegistro = ({ onRegistrar, onClose }) => {
         <input type="text" name="responsable" placeholder="Responsable" value={formData.responsable} onChange={handleChange} className="w-full border p-2 rounded" />
 
         <select name="dependeDe" value={formData.dependeDe} onChange={handleChange} className="w-full border p-2 rounded">
-          <option value="">-- No depende de ninguna --</option>
+          <option value="">-- No depende de ninguna unidad --</option>
           {unidades.map((u) => (
             <option key={u.id} value={u.id}>{u.nombre}</option>
           ))}
         </select>
 
         <select
-          name="idTipoUnidad"
-          value={formData.idTipoUnidad}
+        name="id_tipo_unidad"
+          value={formData.id_tipo_unidad}
           onChange={handleChange}
           className="w-full border p-2 rounded"
           required
         >
           <option value="">-- Seleccione tipo de unidad --</option>
           {tiposUnidad.map((t) => (
-            <option key={t.id_tipo_unidad} value={t.id_tipo_unidad}>
-              {t.nombre}
+            <option key={t.id} value={t.id}>
+              {t.tipo}  {/* nombre legible */}
             </option>
           ))}
         </select>
-
 
         <div className="flex gap-4">
           <button

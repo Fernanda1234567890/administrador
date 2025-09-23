@@ -95,7 +95,7 @@ const CargoIntermedioVer = () => {
       </div>
 
       {/* Tabla */}
-      <div className="max-w-3xl mx-auto">
+      <div className="w-full overflow-x-auto">
         {cargos.length === 0 ? (
           <p>No hay cargos intermedios registrados.</p>
         ) : (

@@ -13,6 +13,17 @@ const carrerasData = () => {
     }
   };
 
+  
+  const getAll = async () => {
+    try {
+      const res = await axios.get(API_URL);
+      return res.data;
+    } catch (error) {
+      console.error("Error al obtener carreras:", error);
+      return [];
+    }
+  };
+
   const createData = async (data) => {
     try {
       const res = await axios.post(API_URL, data);
@@ -55,6 +66,7 @@ const carrerasData = () => {
 
   return {
     getData,
+    getAll,
     createData,
     updateData,
     deleteData,

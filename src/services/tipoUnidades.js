@@ -10,6 +10,7 @@ const tipoUnidadesData = () => {
       const response = await axios.get(API_URL, {
         params: { page, limit, search, estado },
       });
+      console.log(response.data)
       return response.data;
     } catch (error) {
       console.error("Error al obtener tipo-unidad:", error);

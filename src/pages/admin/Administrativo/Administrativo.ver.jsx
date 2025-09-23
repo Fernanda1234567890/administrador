@@ -5,7 +5,7 @@ import personasData from "../../../services/personas";
 
 const AdministrativoVer = () => {
   const [administrativos, setAdministrativos] = useState([]);
-  const [personas, setPersonas] = useState([]);
+  //const [personas, setPersonas] = useState([]);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [search, setSearch] = useState("");
@@ -13,7 +13,7 @@ const AdministrativoVer = () => {
   const [total, setTotal] = useState(0);
 
   const navigate = useNavigate();
-  const { getData, createData, updateData, deleteData, restoreData } = administrativosData();
+  const { getData, updateData, deleteData, restoreData } = administrativosData();
   const { getData: getPerson } = personasData();
 
   // ✅ Inicializar datos
@@ -24,8 +24,8 @@ const AdministrativoVer = () => {
       setAdministrativos(res.data || []);
       setTotal(res.meta?.total || 0);
 
-      const people = await getPerson();
-      setPersonas(people.data || []);
+      // const people = await getPerson();
+      // setPersonas(people.data || []);
     } catch (error) {
       console.error("Error al obtener administrativos:", error);
       setAdministrativos([]);
@@ -109,7 +109,8 @@ const AdministrativoVer = () => {
         </button>
       </div>
 
-      <div className="max-w-3xl mx-auto">
+     
+      <div className="w-full overflow-x-auto">
         {administrativos.length === 0 ? (
           <p className="text-gray-600">No hay administrativos registrados.</p>
         ) : (
@@ -125,8 +126,16 @@ const AdministrativoVer = () => {
               {administrativos.map((adm) => (
                 <tr key={adm.id} className="border-b hover:bg-gray-100 transition">
                   <td className="p-3">{adm.id}</td>
-                  <td className="p-3">{getNombrePersona(adm.id_persona)}</td>
+                  <td className="p-3">
+                    {adm.persona ? `${adm.persona.nombres} ${adm.persona.apellidos}` : "Sin asignar"}
+                  </td>
                   <td className="p-3 flex gap-2">
+                      <button
+                        onClick={() => navigate(`/administrativo/asignacion/${adm.id}`)}
+                        className="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700"
+                      >
+                         Asignar
+                      </button>
                     <button
                       onClick={() => handleActualizar(adm)}
                       className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
@@ -141,12 +150,15 @@ const AdministrativoVer = () => {
                         Restaurar
                       </button>
                     ) : (
-                      <button
-                        onClick={() => handleEliminar(adm.id)}
-                        className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                      >
-                        Dar de baja
-                      </button>
+                      <>
+                        <button
+                          onClick={() => handleEliminar(adm.id)}
+                          className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                        >
+                          Dar de baja
+                        </button>
+  
+                      </>
                     )}
                   </td>
                 </tr>
@@ -179,3 +191,4 @@ const AdministrativoVer = () => {
 };
 
 export default AdministrativoVer;
+

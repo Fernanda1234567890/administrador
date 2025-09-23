@@ -6,7 +6,7 @@ const FacultadVer = () => {
   const [facultades, setFacultades] = useState([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [limit] = useState(5);
+  const [limit] = useState(10);
   const [total, setTotal] = useState(0);
   const [showInactive, setShowInactive] = useState(false);
 
@@ -30,7 +30,6 @@ const FacultadVer = () => {
   };
 
   useEffect(() => {
-    setPage(1);
     fetchFacultades();
   }, [page, search, showInactive]);
 
@@ -85,10 +84,10 @@ const FacultadVer = () => {
 
 
   return (
-    <div className="max-w-6xl mx-auto mt-6 p-4 bg-white shadow rounded-lg">
+    <div className="p-6 sm:p-2 lg:p-12 min-h-screen dark:bg-white">
       {/* Encabezado */}
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Lista de Facultades</h2>
+        <h2 className="text-2xl font-bold mb-4">Lista de Facultades</h2>
       </div>
 
       {/* Buscador */}

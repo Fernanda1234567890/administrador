@@ -13,7 +13,7 @@ const administrativosData = () => {
     }
   };
 
-  const createData = async (data) => {
+  const create = async (data) => {
     try {
       const res = await axios.post(API_URL, data);
       return res.data;
@@ -55,7 +55,7 @@ const administrativosData = () => {
 
   return {
     getData,
-    createData,
+    create,
     updateData,
     deleteData,
     restoreData,
