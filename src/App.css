@@ -1,18 +1,41 @@
-/* Reseteo global */
+/* ===========================
+   Reset global
+=========================== */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* ===========================
+   Root y contenedor general
+=========================== */
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+ width: 100%;
+  max-width: 100%; 
+  margin: 0 ;
+  padding: 0;
+   text-align: left; /*center */
+  min-height: 100vh;
+/* Contenedor principal del contenido */
+.main-container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 0; /* Sin padding por defecto */
 }
 
-/* Logo */
+/* Contenido específico para páginas como Rectorado */
+.page-content {
+  width: 100%;
+  max-width: 1400px; /* Máximo ancho pero más grande */
+  margin: 0 auto;
+  padding: 2rem;
+}
+}
+
+/* ===========================
+   Logo
+=========================== */
 .logo {
   height: 6rem;
   padding: 1.5rem;
@@ -27,12 +50,8 @@
 }
 
 @keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -41,7 +60,9 @@
   }
 }
 
-/* Navbar */
+/* ===========================
+   Navbar
+=========================== */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -49,6 +70,7 @@
   background: #333;
   color: white;
 }
+
 @media (max-width: 768px) {
   .navbar {
     flex-direction: column;
@@ -56,7 +78,9 @@
   }
 }
 
-/* Sidebar */
+/* ===========================
+   Sidebar
+=========================== */
 .sidebar {
   width: 250px;
   position: fixed;
@@ -67,6 +91,7 @@
   transition: transform 0.3s ease;
   z-index: 1000;
 }
+
 @media (max-width: 768px) {
   .sidebar {
     transform: translateX(-100%);
@@ -76,17 +101,21 @@
   }
 }
 
-/* Formularios */
+/* ===========================
+   Formularios
+=========================== */
 .form-group {
   display: flex;
   flex-direction: column;
   margin-bottom: 1rem;
 }
+
 input {
   width: 100%;
   padding: 0.625rem;
   font-size: 1rem;
 }
+
 @media (max-width: 768px) {
   input {
     font-size: 0.875rem;
@@ -94,7 +123,9 @@ input {
   }
 }
 
-/* Footer */
+/* ===========================
+   Footer
+=========================== */
 .footer {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -103,22 +134,52 @@ input {
   background: #333;
   color: white;
 }
+
 @media (max-width: 768px) {
   .footer {
     grid-template-columns: 1fr;
   }
 }
 
-/* Otros */
+/* ===========================
+   Cards y enlaces
+=========================== */
 .card {
   padding: 2rem;
 }
+
 .read-the-docs {
   color: #888;
 }
 
+/* ===========================
+   Swiper
+=========================== */
+.swiper-button-next,
+.swiper-button-prev {
+  color: #AB2A2A; /* prioridad */
+  font-weight: bold;
+}
 
-/* app.css */
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 2rem;
+}
+
+/* ===========================
+   Tablas responsive
+=========================== */
+
+/* Para pantallas menores a 1024px (tablets y laptops pequeñas) */
+@media (max-width: 1024px) {
+  table {
+    display: block;
+    overflow-x: auto; /* Permite scroll horizontal si es necesario */
+    white-space: nowrap;
+  }
+}
+
+/* Para pantallas menores a 640px (móviles) */
 @media (max-width: 640px) {
   table {
     display: block;
@@ -141,5 +202,96 @@ input {
   td::before {
     content: attr(data-label);
     font-weight: bold;
+  }
+}
+
+/* ===========================
+   Media Queries para Responsividad
+=========================== */
+
+/* Laptops grandes (15-17") */
+@media (max-width: 1440px) {
+  .page-content {
+    max-width: 1200px;
+    padding: 2rem;
+  }
+  
+  .rectorado-title {
+    font-size: 2.5rem;
+  }
+}
+
+/* Laptops estándar (13-15") */
+@media (max-width: 1024px) {
+  .page-content {
+    max-width: 100%;
+    padding: 1.5rem;
+  }
+  
+  .rector-info {
+    grid-template-columns: 250px 1fr;
+    gap: 2rem;
+  }
+  
+  .rectorado-title {
+    font-size: 2.2rem;
+  }
+  
+  .autoridades-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}
+
+/* Tablets y laptops pequeñas (11-13") */
+@media (max-width: 768px) {
+  .page-content {
+    padding: 1rem;
+  }
+  
+  .rectorado-header {
+    padding: 2rem 1rem;
+  }
+  
+  .rectorado-title {
+    font-size: 2rem;
+  }
+  
+  .rector-info {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 2rem;
+  }
+  
+  .rector-image {
+    max-width: 300px;
+    margin: 0 auto;
+  }
+  
+  .autoridades-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+/* Móviles */
+@media (max-width: 480px) {
+  .page-content {
+    padding: 0.5rem;
+  }
+  
+  .rectorado-header {
+    padding: 1.5rem 0.5rem;
+  }
+  
+  .rectorado-title {
+    font-size: 1.8rem;
+  }
+  
+  .rectorado-subtitle {
+    font-size: 1.2rem;
+  }
+  
+  .autoridad-card {
+    padding: 1.5rem;
   }
 }

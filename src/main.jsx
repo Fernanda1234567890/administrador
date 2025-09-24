@@ -1,9 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
-import './index.css';
-import { UserProvider } from "./contexts/UserContext";
 
+// Estilos
+import './tailwind.css';
+import './App.css';
+import './index.css';
+
+// App principal
+import App from './App';
+
+// Contextos
+import { UserProvider } from "@admin/contexts/UserContext";
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
