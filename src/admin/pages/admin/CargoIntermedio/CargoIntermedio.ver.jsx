@@ -7,7 +7,7 @@ const API_URL = "http://localhost:3000/api/cargo-intermedio"; // 🔗 Endpoint
 const CargoIntermedioVer = () => {
   const [cargos, setCargos] = useState([]);
   const [page, setPage] = useState(1);
-  const [limit] = useState(10);
+  const [limit] = useState(40);
   const [search, setSearch] = useState("");
   const [showInactive, setShowInactive] = useState(false);
   const [total, setTotal] = useState(0);

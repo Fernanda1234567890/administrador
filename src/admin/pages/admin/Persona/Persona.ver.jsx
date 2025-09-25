@@ -163,9 +163,10 @@ const PersonaVer = () => {
                     <td className="p-2">
                       {p.img ? (
                         <img
-                          src={p.img}
+                          src={`http://localhost:3000/${p.img}`} // 👈 agregamos el host y puerto
                           alt={p.nombres}
-                          className="w-16 h-16 object-cover rounded"
+                          className="w-16 h-16 object-cover rounded cursor-pointer"
+                          onClick={() => window.open(`http://localhost:3000/${p.img}`, '_blank')}
                         />
                       ) : (
                         <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
@@ -173,6 +174,8 @@ const PersonaVer = () => {
                         </div>
                       )}
                     </td>
+
+
                     <td className="p-2 flex gap-2">
                       <button
                         onClick={() => handleActualizar(p)}

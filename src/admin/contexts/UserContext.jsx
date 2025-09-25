@@ -24,7 +24,7 @@ export const UserProvider = ({ children }) => {
   // -----------Login con backend----------------
   const login = async (email, password, rememberMe) => {
     try {
-      const res = await axios.post("http://localhost:3000/usuario/login", {
+      const res = await axios.post("http://localhost:3000/api/usuario/login", {
         email,
         password,
       });

@@ -15,6 +15,7 @@ const PersonaRegistro = ({ onRegistrar, onClose }) => {
     telefono: "",
     direccion: "",
     fecha_nac: "",
+    img: "",
   });
   const [img, setImg] = useState(null);
 
@@ -24,11 +25,14 @@ const PersonaRegistro = ({ onRegistrar, onClose }) => {
       getData(1, 1, "", "", "")
         .then((res) => {
           const persona = res.data.find((p) => p.id === +id);
-          if (persona) setFormData(persona);
-        })
-        .catch((err) => console.error(err));
-    }
-  }, [id]);
+         if (persona) {
+          setFormData(persona);
+          if (persona.img) setImg(persona.img); // 👈 cargamos la URL
+        }
+      })
+      .catch((err) => console.error(err));
+  }
+}, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,23 +50,36 @@ const PersonaRegistro = ({ onRegistrar, onClose }) => {
     e.preventDefault();
 
     try {
-      // 🔹 Crear FormData para enviar texto + archivo
+      // Crear FormData para enviar texto + archivo
       const data = new FormData();
       Object.keys(formData).forEach((key) => {
-        data.append(key, formData[key]);
+        // Asegurarnos de no enviar undefined o null
+        if (formData[key] !== undefined && formData[key] !== null) {
+          data.append(key, formData[key]);
+        }
       });
 
-      if (img) {
+      // Si es un File real, subimos
+      if (img && img instanceof File) {
         data.append("img", img); // debe coincidir con FileInterceptor('img')
       }
 
-      await fetch("http://localhost:3000/api/persona", {
-        method: "POST",
+      const url = id ? `http://localhost:3000/api/persona/${id}` : "http://localhost:3000/api/persona";
+      const method = id ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
         body: data,
       });
 
-      alert("Persona registrada con éxito");
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Error al guardar la persona");
+      }
 
+      alert(`Persona ${id ? "actualizada" : "registrada"} con éxito`);
+
+      // Limpiar formulario
       setFormData({
         nombres: "",
         apellidos: "",
@@ -78,10 +95,11 @@ const PersonaRegistro = ({ onRegistrar, onClose }) => {
       navigate("/admin/persona/ver");
       if (onClose) onClose();
     } catch (error) {
-      alert("Ya existe una persona con ese CI o email. " + error.message);
+      alert("Error: " + error.message);
       console.error(error);
     }
   };
+
 
   const handleCancel = () => {
     setFormData({
@@ -194,15 +212,15 @@ const PersonaRegistro = ({ onRegistrar, onClose }) => {
             onChange={handleFileChange}
             className="w-full border rounded p-2"
           />
-          {img && (
-            <div className="mt-2">
-              <img
-                src={URL.createObjectURL(img)}
-                alt="preview"
-                className="h-32 w-32 object-cover rounded"
-              />
-            </div>
-          )}
+            {img && (
+              <div className="mt-2">
+                <img
+                  src={img instanceof File ? URL.createObjectURL(img) : `http://localhost:3000/${img}`}
+                  alt="preview"
+                  className="h-32 w-32 object-cover rounded"
+                />
+              </div>
+            )}
         </div>
 
 
